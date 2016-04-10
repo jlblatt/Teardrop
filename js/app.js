@@ -2,13 +2,14 @@ var
   FPS = {show: false, last: Date.now(), count: 0},
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
   EFFECTS = {},
+  SOURCE, ANALYSER,
   SCENE, CAMERA, RENDERER;
 
 ////////////////////////////////
 // INIT
 ////////////////////////////////
 
-window.onload = function() {
+document.addEventListener("DOMContentLoaded", function(event) { 
 
   //init three.js
 
@@ -66,20 +67,22 @@ window.onload = function() {
 
   //setup audio
 
-  var audioElement = document.getElementById("song");
+  var song = document.getElementById("song");
 
-  audioElement.addEventListener("canplay", function() {
-    var source = context.createMediaElementSource(audioElement);
-    var analyser = context.createAnalyser();
-    source.connect(analyser);
-    analyser.connect(context.destination);
+  song.addEventListener("canplay", function() {
+    var ctx = new AudioContext();
+    SOURCE = ctx.createMediaElementSource(this);
+    ANALYSER = ctx.createAnalyser();
+    SOURCE.connect(ANALYSER);
+    ANALYSER.connect(ctx.destination);
+    this.play();
   });
 
   //start
 
   loop();
 
-}
+});
 
 ////////////////////////////////
 // MAIN LOOP
