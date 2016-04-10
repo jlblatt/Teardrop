@@ -29,7 +29,7 @@ window.onload = function() {
   INPUT.cursor = new THREE.Mesh(c_geo, c_mat);
   SCENE.add(INPUT.cursor);
 
-  //load audio
+  //start
 
   appReady();
 
