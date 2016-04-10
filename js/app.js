@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     ANALYSER.fftSize = FFTSIZE;
     AUDIODATA = new Uint8Array(ANALYSER.frequencyBinCount);
     ANALYSER.getByteFrequencyData(AUDIODATA);
-    //this.play();
+    this.play();
   });
 
   //start
@@ -101,11 +101,8 @@ function loop(time) {
   //////////////////// first effect //////////////////////////////
 
   ANALYSER.getByteFrequencyData(AUDIODATA);
-  //console.log(AUDIODATA);
 
   ////////////////////////////////////////////////////////////////
-
-  
 
   TWEEN.update(time);
 
