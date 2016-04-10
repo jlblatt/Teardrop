@@ -2,7 +2,7 @@ var
   FPS = {show: false, last: Date.now(), count: 0},
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
   EFFECTS = {},
-  SOURCE, ANALYSER,
+  SOURCE, AUDIOCTX, ANALYSER, FFTSIZE = 2048, AUDIODATA,
   SCENE, CAMERA, RENDERER;
 
 ////////////////////////////////
@@ -66,16 +66,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 
   //setup audio
+  //http://ianreah.com/2013/02/28/Real-time-analysis-of-streaming-audio-data-with-Web-Audio-API.html
 
   var song = document.getElementById("song");
 
   song.addEventListener("canplay", function() {
-    var ctx = new AudioContext();
-    SOURCE = ctx.createMediaElementSource(this);
-    ANALYSER = ctx.createAnalyser();
+    var AUDIOCTX = new AudioContext();
+    SOURCE = AUDIOCTX.createMediaElementSource(this);
+    ANALYSER = AUDIOCTX.createAnalyser();
     SOURCE.connect(ANALYSER);
-    ANALYSER.connect(ctx.destination);
-    this.play();
+    ANALYSER.connect(AUDIOCTX.destination);
+    ANALYSER.fftSize = FFTSIZE;
+    AUDIODATA = new Uint8Array(ANALYSER.frequencyBinCount);
+    ANALYSER.getByteFrequencyData(AUDIODATA);
+    //this.play();
   });
 
   //start
@@ -91,6 +95,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 function loop(time) {
 
   requestAnimationFrame(loop);
+
+  if(!ANALYSER) return;
+
+  //////////////////// first effect //////////////////////////////
+
+  ANALYSER.getByteFrequencyData(AUDIODATA);
+  //console.log(AUDIODATA);
+
+  ////////////////////////////////////////////////////////////////
+
+  
 
   TWEEN.update(time);
 
