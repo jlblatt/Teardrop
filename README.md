@@ -10,7 +10,7 @@ Working with MIDI files proved unworkable for several reasons, so Teardrop is a 
 
 #### How To:
 
-Drag and drop an mp3 to get started.
+Drag and drop an mp3 to get started *lol coming soon*
 
 ##### Credit:
 

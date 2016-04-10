@@ -1,5 +1,5 @@
 var
-  FPS = {show: true, last: Date.now(), count: 0},
+  FPS = {show: false, last: Date.now(), count: 0},
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
   EFFECTS = {},
   SCENE, CAMERA, RENDERER;
@@ -29,48 +29,55 @@ window.onload = function() {
   INPUT.cursor = new THREE.Mesh(c_geo, c_mat);
   SCENE.add(INPUT.cursor);
 
+  //setup input
+
+  function inputEvent(e) {
+    INPUT.x = ((e.clientX / window.innerWidth) - 0.5) * window.innerWidth;
+    INPUT.y = ((e.clientY / window.innerHeight) - 0.5) * -window.innerHeight;
+    INPUT.cursor.position.x = INPUT.x;
+    INPUT.cursor.position.y = INPUT.y;
+    INPUT.e = e;
+    INPUT.last = Date.now();
+  }
+
+  window.onmousemove = inputEvent;
+
+  window.onmousedown = function(e) {
+    INPUT.mousedown = true;
+    inputEvent(e);
+  }
+
+  window.onmouseup = function(e) {
+    INPUT.mousedown = false;
+  }
+
+  window.ontouchmove = function(e) {
+    e.clientX = e.touches[0].clientX;
+    e.clientY = e.touches[0].clientY;
+    inputEvent(e);
+  }
+
+  window.onkeypress = function(e) {
+    e.clientX = Math.floor(Math.random() * window.innerWidth);
+    e.clientY = Math.floor(Math.random() * window.innerHeight);
+    inputEvent(e);
+    //return false;
+  }
+
+  //setup audio
+
+  var audioElement = document.getElementById("song");
+
+  audioElement.addEventListener("canplay", function() {
+    var source = context.createMediaElementSource(audioElement);
+    var analyser = context.createAnalyser();
+    source.connect(analyser);
+    analyser.connect(context.destination);
+  });
+
   //start
 
-  appReady();
-
-  function appReady() {
-
-    function inputEvent(e) {
-      INPUT.x = ((e.clientX / window.innerWidth) - 0.5) * window.innerWidth;
-      INPUT.y = ((e.clientY / window.innerHeight) - 0.5) * -window.innerHeight;
-      INPUT.cursor.position.x = INPUT.x;
-      INPUT.cursor.position.y = INPUT.y;
-      INPUT.e = e;
-      INPUT.last = Date.now();
-    }
-
-    window.onmousemove = inputEvent;
-
-    window.onmousedown = function(e) {
-      INPUT.mousedown = true;
-      inputEvent(e);
-    }
-
-    window.onmouseup = function(e) {
-      INPUT.mousedown = false;
-    }
-
-    window.ontouchmove = function(e) {
-      e.clientX = e.touches[0].clientX;
-      e.clientY = e.touches[0].clientY;
-      inputEvent(e);
-    }
-
-    window.onkeypress = function(e) {
-      e.clientX = Math.floor(Math.random() * window.innerWidth);
-      e.clientY = Math.floor(Math.random() * window.innerHeight);
-      inputEvent(e);
-      //return false;
-    }
-
-    loop();
-
-  }
+  loop();
 
 }
 
