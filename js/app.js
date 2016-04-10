@@ -1,7 +1,6 @@
 var
   FPS = {show: false, last: Date.now(), count: 0},
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
-  EFFECTS = {},
   SOURCE, AUDIOCTX, ANALYSER, FFTSIZE = 2048, AUDIODATA,
   SCENE, CAMERA, RENDERER;
 
