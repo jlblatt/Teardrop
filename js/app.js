@@ -2,7 +2,7 @@ var
   WINX = window.innerWidth, WINY =  window.innerHeight,
   FPS = {show: false, last: Date.now(), count: 0},
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
-  SONG, SOURCE, AUDIOCTX, ANALYSER, AUDIODATA,
+  SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
   SCENE, CAMERA, RENDERER,
   EFFECTS = [], EFFECT;
 
@@ -78,15 +78,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
     SOURCE.connect(ANALYSER);
     ANALYSER.connect(AUDIOCTX.destination);
     ANALYSER.fftSize = fftSize;
-    AUDIODATA = new Uint8Array(ANALYSER.frequencyBinCount);
-    ANALYSER.getByteFrequencyData(AUDIODATA);
+    FD = new Uint8Array(ANALYSER.frequencyBinCount);
+    TD = new Uint8Array(fftSize);
+    ANALYSER.getByteFrequencyData(FD);
+    ANALYSER.getByteTimeDomainData(TD);
   }
 
   SONG = document.getElementById("song");
 
   SONG.addEventListener("canplay", function() {
     EFFECT.setup();
-    //SONG.play();
+    SONG.play();
   });
 
   //window resize
@@ -114,7 +116,8 @@ function loop(time) {
 
   if(!ANALYSER) return;
 
-  ANALYSER.getByteFrequencyData(AUDIODATA);
+  ANALYSER.getByteFrequencyData(FD);
+  ANALYSER.getByteTimeDomainData(TD);
 
   EFFECT.tick();
 
