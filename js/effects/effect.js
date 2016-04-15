@@ -1,7 +1,7 @@
 EFFECTS['effectname'] = {
 
-  HEIGHT: 8,
-  WIDTH: 16,
+  HEIGHT: 32,
+  WIDTH: 32,
   SIZE: 54,
   EQ: [],
   CONTROLS: null,
@@ -10,7 +10,7 @@ EFFECTS['effectname'] = {
     
     _newAnalyser(this.WIDTH * 2);
 
-    CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 10000);
+    CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 100000);
     CAMERA.position.z = this.SIZE * this.WIDTH;
 
     this.CONTROLS = new THREE.OrbitControls(CAMERA, RENDERER.domElement);
@@ -62,7 +62,14 @@ EFFECTS['effectname'] = {
             mat.opacity = .1;
           }
         }
+
       }
+
+      var toff = this.HEIGHT / 2 + Math.floor(this.HEIGHT * 2 * (TD[i] - 128) / 128);
+      if(toff < 0) toff = 0;
+      if(toff > this.HEIGHT - 1) toff = this.HEIGHT - 1;
+
+      this.EQ[i][toff].material.opacity = .8;
       
     }
 
@@ -70,7 +77,9 @@ EFFECTS['effectname'] = {
 
   resize: function() {
 
-    CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 10000);
+    CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 100000);
+    CAMERA.position.z = this.SIZE * this.WIDTH;
+
     this.CONTROLS = new THREE.OrbitControls(CAMERA, RENDERER.domElement);
 
   }
