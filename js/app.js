@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   //setup cursor
 
-  var c_mat = new THREE.MeshBasicMaterial({color: 0x000000});
-  var c_geo = new THREE.CircleGeometry(2, 24);
+  var c_mat = new THREE.MeshBasicMaterial({color: 0xdddddd});
+  var c_geo = new THREE.CircleGeometry(1, 12);
   INPUT.cursor = new THREE.Mesh(c_geo, c_mat);
   SCENE.add(INPUT.cursor);
 
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     ANALYSER.fftSize = FFTSIZE;
     AUDIODATA = new Uint8Array(ANALYSER.frequencyBinCount);
     ANALYSER.getByteFrequencyData(AUDIODATA);
-    this.play();
+    //this.play();
   });
 
   //start
