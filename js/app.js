@@ -1,8 +1,10 @@
 var
+  WINX = window.innerWidth, WINY =  window.innerHeight,
   FPS = {show: false, last: Date.now(), count: 0},
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
-  SOURCE, AUDIOCTX, ANALYSER, FFTSIZE = 2048, AUDIODATA,
-  SCENE, CAMERA, RENDERER;
+  SONG, SOURCE, AUDIOCTX, ANALYSER, AUDIODATA,
+  SCENE, CAMERA, RENDERER,
+  EFFECTS = [], EFFECT;
 
 ////////////////////////////////
 // INIT
@@ -14,11 +16,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   SCENE = new THREE.Scene();
 
-  CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-  CAMERA.position.z = 600;
+  CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 10000);
 
   RENDERER = new THREE.WebGLRenderer();
-  RENDERER.setSize(window.innerWidth, window.innerHeight);
+  RENDERER.setSize(WINX, WINY);
 
   document.body.appendChild(RENDERER.domElement);
 
@@ -27,17 +28,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var c_mat = new THREE.MeshBasicMaterial({color: 0xdddddd});
   var c_geo = new THREE.CircleGeometry(1, 12);
   INPUT.cursor = new THREE.Mesh(c_geo, c_mat);
-  SCENE.add(INPUT.cursor);
+  //SCENE.add(INPUT.cursor);
+
+  //init effects
+  EFFECT = EFFECTS['effectname'];
 
   //setup input
 
   function inputEvent(e) {
-    INPUT.x = ((e.clientX / window.innerWidth) - 0.5) * window.innerWidth;
-    INPUT.y = ((e.clientY / window.innerHeight) - 0.5) * -window.innerHeight;
+    INPUT.x = ((e.clientX / WINX) - 0.5);
+    INPUT.y = ((e.clientY / WINY) - 0.5);
     INPUT.cursor.position.x = INPUT.x;
     INPUT.cursor.position.y = INPUT.y;
     INPUT.e = e;
     INPUT.last = Date.now();
+    EFFECT.input();
   }
 
   window.onmousemove = inputEvent;
@@ -65,21 +70,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 
   //setup audio
-  //http://ianreah.com/2013/02/28/Real-time-analysis-of-streaming-audio-data-with-Web-Audio-API.html
-
-  var song = document.getElementById("song");
-
-  song.addEventListener("canplay", function() {
-    var AUDIOCTX = new AudioContext();
-    SOURCE = AUDIOCTX.createMediaElementSource(this);
+  
+  window._newAnalyser = function (fftSize) {
+    AUDIOCTX = new AudioContext();
+    SOURCE = AUDIOCTX.createMediaElementSource(SONG);
     ANALYSER = AUDIOCTX.createAnalyser();
     SOURCE.connect(ANALYSER);
     ANALYSER.connect(AUDIOCTX.destination);
-    ANALYSER.fftSize = FFTSIZE;
+    ANALYSER.fftSize = fftSize;
     AUDIODATA = new Uint8Array(ANALYSER.frequencyBinCount);
     ANALYSER.getByteFrequencyData(AUDIODATA);
-    //this.play();
+  }
+
+  SONG = document.getElementById("song");
+
+  SONG.addEventListener("canplay", function() {
+    EFFECT.setup();
+    //SONG.play();
   });
+
+  //window resize
+
+  window.onresize = function() {
+    WINX = window.innerWidth;
+    WINY =  window.innerHeight;
+    RENDERER.setSize(WINX, WINY);
+    EFFECT.resize();
+  };
 
   //start
 
@@ -97,15 +114,11 @@ function loop(time) {
 
   if(!ANALYSER) return;
 
-  //////////////////// first effect //////////////////////////////
-
   ANALYSER.getByteFrequencyData(AUDIODATA);
 
-  ////////////////////////////////////////////////////////////////
+  EFFECT.tick();
 
   TWEEN.update(time);
-
-  //render
 
   RENDERER.render(SCENE, CAMERA);
 
