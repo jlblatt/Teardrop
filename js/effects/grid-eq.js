@@ -1,6 +1,6 @@
-EFFECTS['effectname'] = {
+EFFECTS.push({
 
-  HEIGHT: 32,
+  HEIGHT: 20,
   WIDTH: 32,
   SIZE: 54,
   EQ: [],
@@ -38,6 +38,18 @@ EFFECTS['effectname'] = {
     }
 
   }, //setup
+
+  destroy: function() {
+
+    for(var i = 0; i < this.WIDTH * 2; i++) {
+      for(var j = 0; j < this.HEIGHT; j++) {
+        SCENE.remove(this.EQ[i][j]);
+      }
+    }
+
+    this.EQ = [];
+
+  }, //destroy
 
   input: function() {
   
@@ -84,4 +96,4 @@ EFFECTS['effectname'] = {
 
   }
   
-};
+});

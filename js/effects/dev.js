@@ -1,8 +1,13 @@
 EFFECTS.push({
 
-  NAME: "blank",
+  NAME: "dev",
 
   setup: function() {
+
+    _newAnalyser(1024);
+
+    CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 100000);
+    CAMERA.position.z = 600;
 
   }, //setup
 

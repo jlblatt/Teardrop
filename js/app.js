@@ -4,7 +4,7 @@ var
   INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
   SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
   SCENE, CAMERA, RENDERER,
-  EFFECTS = [], EFFECT;
+  EFFECTS = [], EFFECT, EPTR = 0;
 
 ////////////////////////////////
 // INIT
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   //SCENE.add(INPUT.cursor);
 
   //init effects
-  EFFECT = EFFECTS['effectname'];
+  EFFECT = EFFECTS[EPTR];
 
   //setup input
 
@@ -66,6 +66,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
     e.clientX = Math.floor(Math.random() * window.innerWidth);
     e.clientY = Math.floor(Math.random() * window.innerHeight);
     inputEvent(e);
+
+    if(e.which == 32) {
+      EFFECT.destroy();
+      EPTR++;
+      if(EPTR > EFFECTS.length - 1) EPTR = 0;
+      EFFECT = EFFECTS[EPTR];
+      EFFECT.setup();
+    }
+
     //return false;
   }
 
@@ -88,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   SONG.addEventListener("canplay", function() {
     EFFECT.setup();
-    SONG.play();
+    //SONG.play();
   });
 
   //window resize
