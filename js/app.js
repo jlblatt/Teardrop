@@ -1,6 +1,6 @@
 var
   SCENE, CAMERA, RENDERER,
-  SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
+  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
   EFFECTS = [], EFFECT, EPTR = 0, CURSOR,
   FPS = {show: false, last: Date.now(), count: 0};
 
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   SCENE.add(CURSOR);
 
   //init effects
+
   EFFECT = EFFECTS[EPTR];
 
   //setup input
@@ -78,8 +79,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
   //setup audio
   
   window._newAnalyser = function (fftSize) {
-    AUDIOCTX = new AudioContext();
-    SOURCE = AUDIOCTX.createMediaElementSource(SONG);
     ANALYSER = AUDIOCTX.createAnalyser();
     SOURCE.connect(ANALYSER);
     ANALYSER.connect(AUDIOCTX.destination);
@@ -92,11 +91,48 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   SONG = new Audio();
   SONG.addEventListener("canplay", function() {
+    AUDIOCTX = new AudioContext();
+    SOURCE = AUDIOCTX.createMediaElementSource(SONG);
     EFFECT.setup();
     SONG.play();
     loop();
   });
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
+
+  //setup drag and drop for custom songs
+  //http://stackoverflow.com/questions/17944496/html5-audio-player-drag-and-drop
+
+  window.addEventListener('drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var reader = new FileReader();
+    reader.addEventListener('load', function(e) {
+      var data = e.target.result;
+      AUDIOCTX = new AudioContext();
+      AUDIOCTX.decodeAudioData(data, function(buffer) {
+        if(SONG) { 
+          SONG.pause();
+          SONG.src ="";
+          SONG.load();
+        }
+        if(BUFFER) {
+          SOURCE.stop();
+        }
+        BUFFER = buffer;
+        SOURCE = AUDIOCTX.createBufferSource();
+        SOURCE.buffer = buffer;
+        _newAnalyser(ANALYSER.fftSize);
+        SOURCE.start();
+      })
+    })
+    reader.readAsArrayBuffer(e.dataTransfer.files[0]); 
+  });
+
+  window.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  });
 
 });
 
