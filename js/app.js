@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var vector = new THREE.Vector3();
     vector.set((e.clientX / window.innerWidth)  * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
     vector.unproject(CAMERA);
-    var dir = vector.sub( CAMERA.position ).normalize();
-    var distance = - CAMERA.position.z / dir.z;
+    var dir = vector.sub(CAMERA.position).normalize();
+    var distance = -CAMERA.position.z / dir.z;
     var pos = CAMERA.position.clone().add(dir.multiplyScalar(distance));
     CURSOR.position.x = pos.x;
     CURSOR.position.y = pos.y;
@@ -45,15 +45,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 
   window.onmousemove = inputEvent;
-
-  window.onmousedown = function(e) {
-    INPUT.mousedown = true;
-    inputEvent(e);
-  }
-
-  window.onmouseup = function(e) {
-    INPUT.mousedown = false;
-  }
 
   window.ontouchmove = function(e) {
     e.clientX = e.touches[0].clientX;

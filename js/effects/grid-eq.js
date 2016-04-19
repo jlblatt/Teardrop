@@ -2,7 +2,7 @@ EFFECTS.push({
 
   HEIGHT: 20,
   WIDTH: 32,
-  SIZE: 54,
+  SIZE: 18,
   EQ: [],
   CONTROLS: null,
 
