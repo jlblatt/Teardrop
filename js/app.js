@@ -107,11 +107,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
       SONG = new Audio();
       SONG.addEventListener("canplay", function() {
         EFFECT.setup();
-        //SONG.play();
+        SONG.play();
         loop();
       });
       SONG.src = songlist[Math.floor(Math.random() * songlist.length)];
-      console.log(SONG);
     }
   }
   xhr.send();
