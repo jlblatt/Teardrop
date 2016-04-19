@@ -9,6 +9,8 @@ EFFECTS.push({
     CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 100000);
     CAMERA.position.z = 600;
 
+    SONG.volume = .01;
+
   }, //setup
 
   destroy: function() {

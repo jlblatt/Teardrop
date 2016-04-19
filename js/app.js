@@ -1,7 +1,7 @@
 var
   WINX = window.innerWidth, WINY =  window.innerHeight,
   FPS = {show: false, last: Date.now(), count: 0},
-  INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false, cursor: null},
+  INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false},
   SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
   SCENE, CAMERA, RENDERER,
   EFFECTS = [], EFFECT, EPTR = 0;
@@ -22,13 +22,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
   RENDERER.setSize(WINX, WINY);
 
   document.body.appendChild(RENDERER.domElement);
-
-  //setup cursor
-
-  var c_mat = new THREE.MeshBasicMaterial({color: 0xdddddd});
-  var c_geo = new THREE.CircleGeometry(1, 12);
-  INPUT.cursor = new THREE.Mesh(c_geo, c_mat);
-  //SCENE.add(INPUT.cursor);
 
   //init effects
   EFFECT = EFFECTS[EPTR];
@@ -97,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   SONG.addEventListener("canplay", function() {
     EFFECT.setup();
-    //SONG.play();
+    SONG.play();
   });
 
   //window resize
