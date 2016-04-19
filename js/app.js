@@ -90,30 +90,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
     ANALYSER.getByteTimeDomainData(TD);
   }
 
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "mp3/manifest.php", true);
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState==4 && xhr.status==200) {
-
-      //if the user doesn't have php installed, or if they haven't configured a root directory in manifest.php
-      //parsing will fail, so fall back to the included audio file here
-
-      try {
-        var songlist = JSON.parse(xhr.responseText);
-      } catch(e) {
-        songlist = ["mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3"];
-      }
-
-      SONG = new Audio();
-      SONG.addEventListener("canplay", function() {
-        EFFECT.setup();
-        SONG.play();
-        loop();
-      });
-      SONG.src = songlist[Math.floor(Math.random() * songlist.length)];
-    }
-  }
-  xhr.send();
+  SONG = new Audio();
+  SONG.addEventListener("canplay", function() {
+    EFFECT.setup();
+    SONG.play();
+    loop();
+  });
+  SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
 
 });
 
