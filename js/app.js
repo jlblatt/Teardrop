@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     AUDIOCTX = new AudioContext();
     SOURCE = AUDIOCTX.createMediaElementSource(SONG);
     EFFECT.setup();
-    SONG.play();
+    //SONG.play();
     loop();
   });
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
@@ -106,32 +106,51 @@ document.addEventListener("DOMContentLoaded", function(event) {
     e.preventDefault();
     e.stopPropagation();
 
+    document.querySelectorAll("canvas")[0].style.opacity = .5;
+
     var reader = new FileReader();
+
     reader.addEventListener('load', function(e) {
+
       var data = e.target.result;
       AUDIOCTX = new AudioContext();
       AUDIOCTX.decodeAudioData(data, function(buffer) {
+
         if(SONG) { 
           SONG.pause();
           SONG.src ="";
           SONG.load();
         }
+
         if(BUFFER) {
           SOURCE.stop();
         }
+
         BUFFER = buffer;
         SOURCE = AUDIOCTX.createBufferSource();
         SOURCE.buffer = buffer;
         _newAnalyser(ANALYSER.fftSize);
         SOURCE.start();
-      })
+
+        document.querySelectorAll("canvas")[0].style.opacity = 1;
+
+      });
     })
+
     reader.readAsArrayBuffer(e.dataTransfer.files[0]); 
+
   });
 
   window.addEventListener('dragover', function(e) {
     e.preventDefault();
     e.stopPropagation();
+    document.querySelectorAll("canvas")[0].style.opacity = .8;
+  });
+
+  window.addEventListener('dragstop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelectorAll("canvas")[0].style.opacity = 1;
   });
 
 });
