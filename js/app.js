@@ -1,10 +1,8 @@
 var
-  WINX = window.innerWidth, WINY =  window.innerHeight,
-  FPS = {show: false, last: Date.now(), count: 0},
-  INPUT = {last: Date.now(), e: null, x: null, y: null, mousedown: false},
-  SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
   SCENE, CAMERA, RENDERER,
-  EFFECTS = [], EFFECT, EPTR = 0;
+  SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
+  EFFECTS = [], EFFECT, EPTR = 0, CURSOR,
+  FPS = {show: false, last: Date.now(), count: 0};
 
 ////////////////////////////////
 // INIT
@@ -16,12 +14,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   SCENE = new THREE.Scene();
 
-  CAMERA = new THREE.PerspectiveCamera(75, WINX / WINY, 1, 10000);
-
   RENDERER = new THREE.WebGLRenderer();
-  RENDERER.setSize(WINX, WINY);
+  RENDERER.setSize(window.innerWidth, window.innerHeight);
 
   document.body.appendChild(RENDERER.domElement);
+
+  //setup cursor
+
+  var c_mat = new THREE.MeshBasicMaterial({color: 0xdddddd});
+  var c_geo = new THREE.CircleGeometry(1, 12);
+  CURSOR = new THREE.Mesh(c_geo, c_mat);
+  SCENE.add(CURSOR);
 
   //init effects
   EFFECT = EFFECTS[EPTR];
@@ -29,12 +32,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
   //setup input
 
   function inputEvent(e) {
-    INPUT.x = ((e.clientX / WINX) - 0.5);
-    INPUT.y = ((e.clientY / WINY) - 0.5);
-    INPUT.cursor.position.x = INPUT.x;
-    INPUT.cursor.position.y = INPUT.y;
-    INPUT.e = e;
-    INPUT.last = Date.now();
+    //http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+    var vector = new THREE.Vector3();
+    vector.set((e.clientX / window.innerWidth)  * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
+    vector.unproject(CAMERA);
+    var dir = vector.sub( CAMERA.position ).normalize();
+    var distance = - CAMERA.position.z / dir.z;
+    var pos = CAMERA.position.clone().add(dir.multiplyScalar(distance));
+    CURSOR.position.x = pos.x;
+    CURSOR.position.y = pos.y;
     EFFECT.input();
   }
 
@@ -71,6 +77,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
     //return false;
   }
 
+  //window resize
+
+  window.onresize = function() {
+    RENDERER.setSize(window.innerWidth, window.innerHeight);
+    EFFECT.resize();
+  };
+
   //setup audio
   
   window._newAnalyser = function (fftSize) {
@@ -90,21 +103,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   SONG.addEventListener("canplay", function() {
     EFFECT.setup();
-    SONG.play();
+    //SONG.play();
+    loop();
   });
-
-  //window resize
-
-  window.onresize = function() {
-    WINX = window.innerWidth;
-    WINY =  window.innerHeight;
-    RENDERER.setSize(WINX, WINY);
-    EFFECT.resize();
-  };
-
-  //start
-
-  loop();
 
 });
 
