@@ -2,7 +2,7 @@
 
 //if the user doesn't have PHP installed parsing this file will trigger an error in client
 
-$dir = '';
+$dir = 'D:\Jason Blatt\Music\Full Albums\Asteroids Galaxy Tour';
 
 if(file_exists("manifest.json")) {
 
