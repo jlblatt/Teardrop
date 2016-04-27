@@ -28,6 +28,9 @@ EFFECTS.push({
   }, //beat
 
   resize: function() {
+
+    CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+    CAMERA.position.z = 600;
     
   } //resize
   

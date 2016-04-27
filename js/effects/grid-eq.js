@@ -30,8 +30,8 @@ EFFECTS.push({
 
         material.blending = THREE.AdditiveBlending;
 
-        mesh.position.x = (i * this.SIZE * 1.35);
-        mesh.position.y = (j * this.SIZE * 1.35);
+        mesh.position.x = (i * (this.SIZE * 1.35) + (this.SIZE * 1.35 / 2));
+        mesh.position.y = (j * (this.SIZE * 1.35) + (this.SIZE * 1.35 / 2));
 
         SCENE.add(mesh);
         this.EQ[this.EQ.length - 1].push(mesh);
