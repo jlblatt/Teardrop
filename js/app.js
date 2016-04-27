@@ -1,6 +1,6 @@
 var
   SCENE, CAMERA, RENDERER,
-  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD,
+  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, VOLUME,
   EFFECTS = [], EFFECT, EPTR = 0, CURSOR,
   FPS = {show: false, last: Date.now(), count: 0};
 
@@ -78,11 +78,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   //setup audio
   
-  window._newAnalyser = function (fftSize) {
+  window._newAnalyser = function (fftSize, smoothingTimeConstant) {
     ANALYSER = AUDIOCTX.createAnalyser();
     SOURCE.connect(ANALYSER);
     ANALYSER.connect(AUDIOCTX.destination);
     ANALYSER.fftSize = fftSize;
+    ANALYSER.smoothingTimeConstant = smoothingTimeConstant;
     FD = new Uint8Array(ANALYSER.frequencyBinCount);
     TD = new Uint8Array(fftSize);
     ANALYSER.getByteFrequencyData(FD);
@@ -94,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     AUDIOCTX = new AudioContext();
     SOURCE = AUDIOCTX.createMediaElementSource(SONG);
     EFFECT.setup();
-    //SONG.play();
+    SONG.play();
     loop();
   });
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
@@ -129,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         BUFFER = buffer;
         SOURCE = AUDIOCTX.createBufferSource();
         SOURCE.buffer = buffer;
-        _newAnalyser(ANALYSER.fftSize);
+        _newAnalyser(ANALYSER.fftSize, ANALYSER.smoothingTimeConstant);
         SOURCE.start();
 
         document.querySelectorAll("canvas")[0].style.opacity = 1;
@@ -154,6 +155,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
 });
+
+////////////////////////////////
+// SCREEN MESSAGE
+////////////////////////////////
+
+
 
 ////////////////////////////////
 // MAIN LOOP

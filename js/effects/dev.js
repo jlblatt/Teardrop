@@ -4,7 +4,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    _newAnalyser(1024);
+    _newAnalyser(1024, .5);
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = 600;
@@ -22,6 +22,10 @@ EFFECTS.push({
   tick: function() {
 
   }, //tick
+
+  beat: function() {
+
+  }, //beat
 
   resize: function() {
     

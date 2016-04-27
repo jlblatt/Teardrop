@@ -8,7 +8,7 @@ EFFECTS.push({
 
   setup: function() {
     
-    _newAnalyser(this.WIDTH * 2);
+    _newAnalyser(this.WIDTH * 2, .5);
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = this.SIZE * this.WIDTH;
