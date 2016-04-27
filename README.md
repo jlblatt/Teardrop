@@ -14,6 +14,8 @@ Ian Reah's excellent tutorial [Real-time analysis of streaming audio data with W
 
 Felix Turner's awesome article [Making Audio Reactive Visuals](https://www.airtightinteractive.com/2013/10/making-audio-reactive-visuals/).
 
+MDN's doc [Visualizations with Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API) is also very comprehensive.
+
 I included [STS9's Tap In at Stage AE in Pittsburgh](https://archive.org/details/sts92015-10-30.m934b_24bit) because [etree.org and archive.org are *insanely* awesome](https://archive.org/details/etree).  Yinz all should [donate](https://archive.org/donate/).
 
 ##### License:

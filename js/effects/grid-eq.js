@@ -87,6 +87,10 @@ EFFECTS.push({
 
   }, //tick
 
+  beat: function() {
+
+  }, //beat
+
   resize: function() {
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);

@@ -1,8 +1,9 @@
 var
   SCENE, CAMERA, RENDERER,
-  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, VOLUME,
+  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, 
+  VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0, LASTFRAME = 0,
   EFFECTS = [], EFFECT, EPTR = 0, CURSOR,
-  FPS = {show: false, last: Date.now(), count: 0};
+  FPS = {show: true, count: 0};
 
 ////////////////////////////////
 // INIT
@@ -170,25 +171,43 @@ function loop(time) {
 
   requestAnimationFrame(loop);
 
+  LASTFRAME = time;
+
+  //fps
+
+  if(FPS.show && time - LASTFRAME > 1000) {
+    console.log(FPS.count);
+    FPS.count = 0;
+  } else if(FPS.show) {
+    FPS.count++;
+  }
+
+  //visuals
+
   if(!ANALYSER) return;
 
   ANALYSER.getByteFrequencyData(FD);
   ANALYSER.getByteTimeDomainData(TD);
+
+  var sum = 0;
+  for(var i = 0; i < FD.length; i++) {
+    sum += FD[i];
+  }
+
+  VOLUME = sum / FD.length;
+
+  if(VOLUME > THRESHOLD && time - LASTBEAT > 200) {
+    EFFECT.beat();
+    THRESHOLD = VOLUME;
+    LASTBEAT = time;
+  }
+
+  THRESHOLD -= (time - LASTFRAME) / 100;
 
   EFFECT.tick();
 
   TWEEN.update(time);
 
   RENDERER.render(SCENE, CAMERA);
-
-  //fps
-
-  if(FPS.show && Date.now() - FPS.last > 1000) {
-    console.log(FPS.count);
-    FPS.count = 0;
-    FPS.last = Date.now();
-  } else if(FPS.show) {
-    FPS.count++;
-  }
 
 }
