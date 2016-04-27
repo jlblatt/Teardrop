@@ -1,7 +1,7 @@
 var
   SCENE, CAMERA, RENDERER,
   SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, 
-  VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0, LASTFRAME = 0,
+  VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0,
   EFFECTS = [], EFFECT, EPTR = 0, CURSOR,
   FPS_SHOW = false, FPS_LAST = 0, FPS_COUNT = 0;
 
@@ -193,11 +193,13 @@ function loop(time) {
     sum += FD[i];
   }
 
-  VOLUME = sum / FD.length;
+  //substantial smoothing/timing here that could be abstracted...
 
-  if(VOLUME > THRESHOLD && time - LASTBEAT > 500) {
+  VOLUME += ((sum / FD.length)  - VOLUME) * 0.12;
+
+  if(VOLUME > THRESHOLD && VOLUME > 25 && time - LASTBEAT > 300) {
     EFFECT.beat();
-    THRESHOLD = VOLUME;
+    THRESHOLD = VOLUME * 1.2;
     LASTBEAT = time;
   }
 
@@ -207,11 +209,6 @@ function loop(time) {
 
   RENDERER.render(SCENE, CAMERA);
 
-  if(typeof time !== 'undefined') {
-    THRESHOLD -= (time - LASTFRAME) / 500;
-    LASTFRAME = time;
-  } else {
-    LASTFRAME = 0;  
-  }
+  THRESHOLD *= 0.99;
 
 }
