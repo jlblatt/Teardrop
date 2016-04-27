@@ -89,6 +89,8 @@ EFFECTS.push({
 
   beat: function() {
 
+    console.log(THRESHOLD);
+
   }, //beat
 
   resize: function() {
