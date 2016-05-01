@@ -2,7 +2,7 @@ var
   SCENE, CAMERA, RENDERER,
   SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, 
   VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0,
-  EFFECTS = [], EFFECT, EPTR = 0, CURSOR,
+  EFFECTS = [], EFFECT, EPTR = 0,
   FPS_SHOW = false, FPS_LAST = 0, FPS_COUNT = 0;
 
 ////////////////////////////////
@@ -20,13 +20,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   document.body.appendChild(RENDERER.domElement);
 
-  //setup cursor
-
-  var c_mat = new THREE.MeshBasicMaterial({color: 0xdddddd});
-  var c_geo = new THREE.CircleGeometry(1, 12);
-  CURSOR = new THREE.Mesh(c_geo, c_mat);
-  SCENE.add(CURSOR);
-
   //init effects
 
   EFFECT = EFFECTS[EPTR];
@@ -34,16 +27,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
   //setup input
 
   function inputEvent(e) {
-    //http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+    // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
     var vector = new THREE.Vector3();
     vector.set((e.clientX / window.innerWidth)  * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
     vector.unproject(CAMERA);
     var dir = vector.sub(CAMERA.position).normalize();
     var distance = -CAMERA.position.z / dir.z;
     var pos = CAMERA.position.clone().add(dir.multiplyScalar(distance));
-    CURSOR.position.x = pos.x;
-    CURSOR.position.y = pos.y;
-    EFFECT.input();
+    EFFECT.input(pos.x, pos.y);
   }
 
   window.onmousemove = inputEvent;
