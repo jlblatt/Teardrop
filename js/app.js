@@ -1,6 +1,6 @@
 var
   SCENE, CAMERA, RENDERER,
-  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, 
+  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, TOTALTIME = 0,
   VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0,
   EFFECTS = [], EFFECT, EPTR = 0,
   FPS_SHOW = false, FPS_LAST = 0, FPS_COUNT = 0;
@@ -98,22 +98,28 @@ document.addEventListener("DOMContentLoaded", function(event) {
     SONG.play();
     player.classList.add("playing");
     document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
-    document.getElementById("totaltime").innerHTML = _formatTime(SONG.duration);
+    TOTALTIME = SONG.duration;
   });
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
 
   //setup drag and drop for custom songs
   //http://stackoverflow.com/questions/17944496/html5-audio-player-drag-and-drop
 
+  var reader = new FileReader();
+
   window.addEventListener('drop', function(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    document.querySelectorAll("canvas")[0].style.opacity = .5;
-
-    var reader = new FileReader();
+    if(e.dataTransfer.files.length == 0) {
+      document.querySelectorAll("canvas")[0].style.opacity = 1;
+      return;
+    }
 
     reader.addEventListener('load', function(e) {
+
+      document.querySelectorAll("canvas")[0].style.opacity = .5;
+      document.getElementById("player").style.pointerEvents = 'none';
 
       var data = e.target.result;
       AUDIOCTX = new AudioContext();
@@ -139,14 +145,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         player.classList.add("playing");
 
         document.querySelectorAll("canvas")[0].style.opacity = 1;
-        document.getElementById("totaltime").innerHTML = _formatTime(BUFFER.duration);
-
-        document.getElementById("player").innerHTML = '<a id="playpause"></a>' + document.getElementById("player").innerHTML;
-        document.getElementById("playpause").addEventListener('click', function() {
-          if(player.classList.contains("playing")) AUDIOCTX.suspend();
-          else AUDIOCTX.resume();
-          document.getElementById("player").classList.toggle("playing");
-        });
+        document.getElementById("player").style.pointerEvents = 'auto';
+        TOTALTIME = BUFFER.duration;
 
       });
     });
@@ -168,8 +168,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
       });
 
-    document.getElementById("playpause").remove();
-
   });
 
   window.addEventListener('dragover', function(e) {
@@ -178,22 +176,28 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.querySelectorAll("canvas")[0].style.opacity = .8;
   });
 
-  window.addEventListener('dragstop', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    document.querySelectorAll("canvas")[0].style.opacity = 1;
-  });
-
   //player controls
 
   document.getElementById('hide').addEventListener('click', function() {
     document.getElementById('player').classList.add('hidden');
   });
 
-  document.getElementById('playpause').addEventListener('click', function() {
-    if(document.getElementById('player').classList.contains("playing")) SONG.pause();
-    else SONG.play();
+  document.getElementById('play-pause').addEventListener('click', function() {
+    if(player.classList.contains("playing")) {
+      AUDIOCTX.suspend();
+      if(SONG) SONG.pause();
+    } else {
+      AUDIOCTX.resume();
+      if(SONG) SONG.play();
+    }
     document.getElementById('player').classList.toggle("playing");
+  });
+
+  document.getElementById("seek-container").addEventListener('click', function(e) {
+    var percent = (e.clientX - 116) / (window.innerWidth - 232);
+    var targetTime = TOTALTIME * percent;
+    if(SONG) SONG.currentTime = targetTime;
+    else BUFFER.currentTime = targetTime;
   });
 
   window.onkeypress = function(e) {
@@ -239,6 +243,11 @@ function loop(time) {
   ANALYSER.getByteFrequencyData(FD);
   ANALYSER.getByteTimeDomainData(TD);
 
+  if(AUDIOCTX.state == "suspended") {
+    FD = new Uint8Array(FD.length);
+    TD = new Uint8Array(TD.length);
+  }
+
   var sum = 0;
   for(var i = 0; i < FD.length; i++) {
     sum += FD[i];
@@ -267,5 +276,8 @@ function loop(time) {
   if(SONG) currentTime = SONG.currentTime;
   else currentTime = AUDIOCTX.currentTime;
 
-  document.getElementById("currtime").innerHTML = _formatTime(currentTime);
+  document.getElementById("curr-time").innerHTML = _formatTime(currentTime);
+  document.getElementById("total-time").innerHTML = _formatTime(TOTALTIME);
+
+  document.getElementById("progress").style.width = (currentTime * 100 / TOTALTIME) + '%';
 }
