@@ -10,6 +10,7 @@
     <script src="js/inc/three.min.js"></script>
     <script src="js/inc/OrbitControls.js"></script>
     <script src="js/inc/Tween.js"></script>
+    <script src="js/inc/jsmediatags.min.js"></script>
     <script src="js/app.js"></script>
 
     <script src="js/effects/dev.js"></script>
@@ -17,6 +18,21 @@
 
   </head>
 
-  <body><!-- shhhhhh --></body>
+  <body>
+
+    <div id="player">
+      <a id="playpause"></a>
+      <a id="hide"></a>
+      <span id="info">test song name etc... goes here -- another listing</span>
+      <span id="currtime">00:00</span>
+      <span id="seek-container">
+        <span id="seek">
+          <span id="progress"></span>
+        </span>
+      </span>
+      <span id="totaltime">00:00</span>
+    </div>
+
+  </body>
 
 </html>

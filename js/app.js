@@ -82,13 +82,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
     ANALYSER.getByteTimeDomainData(TD);
   }
 
+  window._formatTime = function(t) {
+    var m = Math.floor(t / 60);
+    var s = Math.floor(t % 60);
+    if(m < 10) m = '0' + m;
+    if(s < 10) s = '0' + s;
+    return m + ':' + s;
+  }
+
   SONG = new Audio();
   SONG.addEventListener("canplay", function() {
     AUDIOCTX = new AudioContext();
     SOURCE = AUDIOCTX.createMediaElementSource(SONG);
     EFFECT.setup();
     SONG.play();
-    loop();
+    player.classList.add("playing");
+    document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
+    document.getElementById("totaltime").innerHTML = _formatTime(SONG.duration);
   });
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
 
@@ -113,6 +123,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
           SONG.pause();
           SONG.src ="";
           SONG.load();
+          SONG = null;
+          player.classList.remove("playing");
         }
 
         if(BUFFER) {
@@ -124,13 +136,39 @@ document.addEventListener("DOMContentLoaded", function(event) {
         SOURCE.buffer = buffer;
         _newAnalyser(ANALYSER.fftSize, ANALYSER.smoothingTimeConstant);
         SOURCE.start();
+        player.classList.add("playing");
 
         document.querySelectorAll("canvas")[0].style.opacity = 1;
+        document.getElementById("totaltime").innerHTML = _formatTime(BUFFER.duration);
+
+        document.getElementById("player").innerHTML = '<a id="playpause"></a>' + document.getElementById("player").innerHTML;
+        document.getElementById("playpause").addEventListener('click', function() {
+          if(player.classList.contains("playing")) AUDIOCTX.suspend();
+          else AUDIOCTX.resume();
+          document.getElementById("player").classList.toggle("playing");
+        });
 
       });
-    })
+    });
 
-    reader.readAsArrayBuffer(e.dataTransfer.files[0]); 
+    reader.readAsArrayBuffer(e.dataTransfer.files[0]);
+
+    new jsmediatags.Reader(e.dataTransfer.files[0])
+      .setTagsToRead(["artist", "title", "album", "year"])
+      .read({
+        onSuccess: function(tag) {
+          var artist = tag.tags.artist && tag.tags.artist.trim() ? tag.tags.artist : "";
+          var title = tag.tags.title && tag.tags.title.trim() ? ' - ' + tag.tags.title : "";
+          var album = tag.tags.album && tag.tags.album.trim() ? ' - ' + tag.tags.album : "";
+          var year = tag.tags.year  && tag.tags.year.trim() ? ' (' + tag.tags.year + ')' : "";
+          document.getElementById("info").innerHTML = artist + title + album + year;
+        },
+        onError: function(error) {
+          document.getElementById("info").innerHTML = 'Error reading media tag :(';
+        }
+      });
+
+    document.getElementById("playpause").remove();
 
   });
 
@@ -145,6 +183,28 @@ document.addEventListener("DOMContentLoaded", function(event) {
     e.stopPropagation();
     document.querySelectorAll("canvas")[0].style.opacity = 1;
   });
+
+  //player controls
+
+  document.getElementById('hide').addEventListener('click', function() {
+    document.getElementById('player').classList.add('hidden');
+  });
+
+  document.getElementById('playpause').addEventListener('click', function() {
+    if(document.getElementById('player').classList.contains("playing")) SONG.pause();
+    else SONG.play();
+    document.getElementById('player').classList.toggle("playing");
+  });
+
+  window.onkeypress = function(e) {
+    if(e.which == 112 || e.which == 80) {
+      document.getElementById('player').classList.remove('hidden');
+    }
+  }
+
+  //let's go!
+
+  loop();
 
 });
 
@@ -184,8 +244,6 @@ function loop(time) {
     sum += FD[i];
   }
 
-  //substantial smoothing/timing here that could be abstracted...
-
   VOLUME += ((sum / FD.length)  - VOLUME) * 0.12;
 
   if(VOLUME > THRESHOLD && VOLUME > 25 && time - LASTBEAT > 300) {
@@ -202,4 +260,12 @@ function loop(time) {
 
   THRESHOLD *= 0.99;
 
+  //player
+
+  var currentTime;
+
+  if(SONG) currentTime = SONG.currentTime;
+  else currentTime = AUDIOCTX.currentTime;
+
+  document.getElementById("currtime").innerHTML = _formatTime(currentTime);
 }
