@@ -9,7 +9,13 @@ var
 // INIT
 ////////////////////////////////
 
-document.addEventListener("DOMContentLoaded", function(event) { 
+window.addEventListener("load", function(event) { 
+
+  //fade intro
+
+  setTimeout(function() {
+    document.getElementById('intro').classList.add('hidden');
+  }, 1000);
 
   //init three.js
 
