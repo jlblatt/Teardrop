@@ -50,12 +50,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
     e.clientY = Math.floor(Math.random() * window.innerHeight);
     inputEvent(e);
 
-    if(e.which == 32) {
+    if(e.which == 13) {
       EFFECT.destroy();
       EPTR++;
       if(EPTR > EFFECTS.length - 1) EPTR = 0;
       EFFECT = EFFECTS[EPTR];
       EFFECT.setup();
+    }
+
+    if(e.which == 32) {
+      if(player.classList.contains("playing")) SONG.pause();
+      else SONG.play();
+      document.getElementById('player').classList.toggle("playing");
     }
 
   }
