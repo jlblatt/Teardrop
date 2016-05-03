@@ -1,6 +1,6 @@
 var
   SCENE, CAMERA, RENDERER,
-  SONG, BUFFER, SOURCE, AUDIOCTX, ANALYSER, FD, TD, TOTALTIME = 0,
+  SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD, TOTALTIME = 0,
   VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0,
   EFFECTS = [], EFFECT, EPTR = 0,
   FPS_SHOW = false, FPS_LAST = 0, FPS_COUNT = 0;
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     inputEvent(e);
   }
 
-  window.onkeypress = function(e) {
+  window.onkeydown = function(e) {
     e.clientX = Math.floor(Math.random() * window.innerWidth);
     e.clientY = Math.floor(Math.random() * window.innerHeight);
     inputEvent(e);
@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
       EFFECT.setup();
     }
 
-    //return false;
   }
 
   //window resize
@@ -97,61 +96,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
     EFFECT.setup();
     SONG.play();
     player.classList.add("playing");
-    document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
     TOTALTIME = SONG.duration;
   });
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
-
-  //setup drag and drop for custom songs
-  //http://stackoverflow.com/questions/17944496/html5-audio-player-drag-and-drop
-
-  var reader = new FileReader();
+  document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
 
   window.addEventListener('drop', function(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    if(e.dataTransfer.files.length == 0) {
-      document.querySelectorAll("canvas")[0].style.opacity = 1;
-      return;
-    }
+    document.querySelectorAll("canvas")[0].style.opacity = 1;
 
-    reader.addEventListener('load', function(e) {
+    if(e.dataTransfer.files.length == 0) return;
 
-      document.querySelectorAll("canvas")[0].style.opacity = .5;
-      document.getElementById("player").style.pointerEvents = 'none';
-
-      var data = e.target.result;
-      AUDIOCTX = new AudioContext();
-      AUDIOCTX.decodeAudioData(data, function(buffer) {
-
-        if(SONG) { 
-          SONG.pause();
-          SONG.src ="";
-          SONG.load();
-          SONG = null;
-          player.classList.remove("playing");
-        }
-
-        if(BUFFER) {
-          SOURCE.stop();
-        }
-
-        BUFFER = buffer;
-        SOURCE = AUDIOCTX.createBufferSource();
-        SOURCE.buffer = buffer;
-        _newAnalyser(ANALYSER.fftSize, ANALYSER.smoothingTimeConstant);
-        SOURCE.start();
-        player.classList.add("playing");
-
-        document.querySelectorAll("canvas")[0].style.opacity = 1;
-        document.getElementById("player").style.pointerEvents = 'auto';
-        TOTALTIME = BUFFER.duration;
-
-      });
-    });
-
-    reader.readAsArrayBuffer(e.dataTransfer.files[0]);
+    e.dataTransfer.files[0].oneTimeOnly = true;
+    SONG.src = URL.createObjectURL(e.dataTransfer.files[0]);
 
     new jsmediatags.Reader(e.dataTransfer.files[0])
       .setTagsToRead(["artist", "title", "album", "year"])
@@ -183,21 +142,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   document.getElementById('play-pause').addEventListener('click', function() {
-    if(player.classList.contains("playing")) {
-      AUDIOCTX.suspend();
-      if(SONG) SONG.pause();
-    } else {
-      AUDIOCTX.resume();
-      if(SONG) SONG.play();
-    }
+    if(player.classList.contains("playing")) SONG.pause();
+    else SONG.play();
     document.getElementById('player').classList.toggle("playing");
   });
 
   document.getElementById("seek-container").addEventListener('click', function(e) {
     var percent = (e.clientX - 116) / (window.innerWidth - 232);
     var targetTime = TOTALTIME * percent;
-    if(SONG) SONG.currentTime = targetTime;
-    else BUFFER.currentTime = targetTime;
+    SONG.currentTime = targetTime;
   });
 
   window.onkeypress = function(e) {
@@ -243,11 +196,6 @@ function loop(time) {
   ANALYSER.getByteFrequencyData(FD);
   ANALYSER.getByteTimeDomainData(TD);
 
-  if(AUDIOCTX.state == "suspended") {
-    FD = new Uint8Array(FD.length);
-    TD = new Uint8Array(TD.length);
-  }
-
   var sum = 0;
   for(var i = 0; i < FD.length; i++) {
     sum += FD[i];
@@ -271,13 +219,7 @@ function loop(time) {
 
   //player
 
-  var currentTime;
-
-  if(SONG) currentTime = SONG.currentTime;
-  else currentTime = AUDIOCTX.currentTime;
-
-  document.getElementById("curr-time").innerHTML = _formatTime(currentTime);
+  document.getElementById("curr-time").innerHTML = _formatTime(SONG.currentTime);
   document.getElementById("total-time").innerHTML = _formatTime(TOTALTIME);
-
-  document.getElementById("progress").style.width = (currentTime * 100 / TOTALTIME) + '%';
+  document.getElementById("progress").style.width = (SONG.currentTime * 100 / TOTALTIME) + '%';
 }
