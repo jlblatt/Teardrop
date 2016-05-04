@@ -5,7 +5,7 @@ EFFECTS.push({
 
   POINTS: [],
 
-  LINES: [],
+  LINES: null,
   LINESMESH: null,
 
   // COLORCYCLE: function(c) {
@@ -67,10 +67,9 @@ EFFECTS.push({
 
     SCENE.remove(this.LINES);
     this.LINES = null;
+
     SCENE.remove(this.LINESMESH);
     this.LINESMESH = null;
-
-    this.LINES.verticesNeedUpdate = true;
 
     COMPOSER = null;
 
@@ -94,6 +93,8 @@ EFFECTS.push({
       //var newcolor = this.COLORCYCLE(this.POINTS[i].material.color);
       //this.POINTS[i].material.color = newcolor ? newcolor : {r: 1, g: 1, b: 1}; 
     }
+
+    if(!this.LINES) return;
 
     for(var i = 0; i < this.LINES.vertices.length; i++) {
 
