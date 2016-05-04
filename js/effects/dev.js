@@ -16,13 +16,6 @@ EFFECTS.push({
 
     _newAnalyser(this.FFT, .5);
 
-    // composer = new THREE.EffectComposer(RENDERER);
-    // composer.addPass(new THREE.RenderPass(SCENE, CAMERA));
-
-    // var dotScreenEffect = new THREE.ShaderPass(THREE.DotScreenShader);
-    // dotScreenEffect.uniforms['scale'].value = 4;
-    // composer.addPass(dotScreenEffect);
-
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = 2400;
 
@@ -38,6 +31,16 @@ EFFECTS.push({
       this.POINTS.push(mesh);
     }
 
+    //shaders
+
+    COMPOSER = new THREE.EffectComposer(RENDERER);
+    COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
+
+    var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
+    kaleidoPass.renderToScreen = true;
+
+    COMPOSER.addPass(kaleidoPass);
+    
   }, //setup
 
   destroy: function() {
@@ -47,6 +50,8 @@ EFFECTS.push({
     }
 
     this.POINTS = [];
+
+    COMPOSER = null;
 
   }, //destroy
 

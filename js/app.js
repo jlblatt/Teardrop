@@ -1,5 +1,5 @@
 var
-  SCENE, CAMERA, RENDERER,
+  SCENE, CAMERA, RENDERER, COMPOSER,
   SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD, TOTALTIME = 0,
   VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0,
   EFFECTS = [], EFFECT, EPTR = 0,
@@ -15,7 +15,7 @@ window.addEventListener("load", function(event) {
 
   setTimeout(function() {
     document.getElementById('intro').classList.add('hidden');
-  }, 1000);
+  }, 2000);
 
   //init three.js
 
@@ -76,7 +76,9 @@ window.addEventListener("load", function(event) {
 
   window.onresize = function() {
     RENDERER.setSize(window.innerWidth, window.innerHeight);
+    if(COMPOSER) COMPOSER.setSize(window.innerWidth, window.innerHeight);
     EFFECT.resize();
+    //CAMERA.updateProjectionMatrix();
   };
 
   //setup audio
@@ -225,7 +227,8 @@ function loop(time) {
 
   TWEEN.update(time);
 
-  RENDERER.render(SCENE, CAMERA);
+  if(COMPOSER) COMPOSER.render();
+  else RENDERER.render(SCENE, CAMERA);
 
   THRESHOLD *= 0.99;
 
