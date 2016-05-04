@@ -37,6 +37,8 @@ EFFECTS.push({
     COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
 
     var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
+    kaleidoPass.uniforms['sides'] = { type: "f", value: 8.0 };
+    kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / 16 };
     kaleidoPass.renderToScreen = true;
 
     COMPOSER.addPass(kaleidoPass);
