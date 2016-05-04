@@ -6,11 +6,11 @@ EFFECTS.push({
   POINTS: [],
 
   LINES: [],
-  
+  LINESMESH: null,
 
-  COLORCYCLE: function(c) {
-    return c;
-  },
+  // COLORCYCLE: function(c) {
+  //   return c;
+  // },
 
   setup: function() {
 
@@ -30,6 +30,18 @@ EFFECTS.push({
       SCENE.add(mesh);
       this.POINTS.push(mesh);
     }
+
+    var geometry = new THREE.Geometry();
+    var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 255, 255)});
+
+    for(var i = -(this.FFT  / 2) + .5; i < this.FFT / 2; i++) {
+      geometry.vertices.push(new THREE.Vector3((i * this.FFT) / 2, 0 , 10));
+    }
+
+    var mesh = new THREE.Line(geometry, material);
+    SCENE.add(mesh);
+    this.LINES = geometry;
+    this.LINESMESH = mesh;
 
     //shaders
 
@@ -53,6 +65,11 @@ EFFECTS.push({
 
     this.POINTS = [];
 
+    SCENE.remove(this.LINES);
+    this.LINES = null;
+    SCENE.remove(this.LINESMESH);
+    this.LINESMESH = null;
+
     COMPOSER = null;
 
   }, //destroy
@@ -66,15 +83,26 @@ EFFECTS.push({
     var i = this.POINTS.length;
     for(var i = 0; i < this.POINTS.length; i++) {
       var fd = FD[Math.abs(i - this.FFT / 2)];
-      if(this.POINTS[i].scale.x < fd) this.POINTS[i].scale.x = fd * 3;
-      if(this.POINTS[i].scale.y < fd) this.POINTS[i].scale.y = fd * 3;
-      var newscalex = this.POINTS[i].scale.x < 0 ? 0 : this.POINTS[i].scale.x * .98;
-      var newscaley = this.POINTS[i].scale.y < 0 ? 0 : this.POINTS[i].scale.y * .98;
+      if(this.POINTS[i].scale.x < fd) this.POINTS[i].scale.x = fd * 2.5;
+      if(this.POINTS[i].scale.y < fd) this.POINTS[i].scale.y = fd * 2.5;
+      var newscalex = this.POINTS[i].scale.x < 0 ? 0 : this.POINTS[i].scale.x * .97;
+      var newscaley = this.POINTS[i].scale.y < 0 ? 0 : this.POINTS[i].scale.y * .97;
       this.POINTS[i].scale.x = newscalex;
       this.POINTS[i].scale.y = newscaley;
-      var newcolor = this.COLORCYCLE(this.POINTS[i].material.color);
-      this.POINTS[i].material.color = newcolor ? newcolor : {r: 1, g: 1, b: 1}; 
+      //var newcolor = this.COLORCYCLE(this.POINTS[i].material.color);
+      //this.POINTS[i].material.color = newcolor ? newcolor : {r: 1, g: 1, b: 1}; 
     }
+
+    for(var i = 0; i < this.LINES.vertices.length; i++) {
+
+      var td = TD[i] - 128;
+
+      if(Math.abs(this.LINES.vertices[i].y) < Math.abs(td * 25)) this.LINES.vertices[i].setY(td * 25);
+      var newy = Math.abs(this.LINES.vertices[i].y) < 1 ? 0 : this.LINES.vertices[i].y * .92;
+      this.LINES.vertices[i].setY(newy);
+    }
+
+    this.LINES.verticesNeedUpdate = true;
 
   }, //tick
 
