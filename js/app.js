@@ -40,10 +40,11 @@ window.addEventListener("load", function(event) {
     var dir = vector.sub(CAMERA.position).normalize();
     var distance = -CAMERA.position.z / dir.z;
     var pos = CAMERA.position.clone().add(dir.multiplyScalar(distance));
-    EFFECT.input(pos.x, pos.y);
+    EFFECT.input(pos.x, pos.y, e);
   }
 
   window.onmousemove = inputEvent;
+  window.onclick = inputEvent;
 
   window.ontouchmove = function(e) {
     e.clientX = e.touches[0].clientX;

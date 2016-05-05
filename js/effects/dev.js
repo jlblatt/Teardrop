@@ -42,18 +42,6 @@ EFFECTS.push({
     SCENE.add(mesh);
     this.LINES = geometry;
     this.LINESMESH = mesh;
-
-    //shaders
-
-    COMPOSER = new THREE.EffectComposer(RENDERER);
-    COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
-
-    var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
-    kaleidoPass.uniforms['sides'] = { type: "f", value: 8.0 };
-    kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / 16 };
-    kaleidoPass.renderToScreen = true;
-
-    COMPOSER.addPass(kaleidoPass);
     
   }, //setup
 
@@ -75,7 +63,29 @@ EFFECTS.push({
 
   }, //destroy
 
-  input: function() {
+  input: function(x, y, e) {
+
+    if(e.type == "click") {
+
+      if(!COMPOSER) {
+
+        COMPOSER = new THREE.EffectComposer(RENDERER);
+        COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
+
+        var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
+        kaleidoPass.uniforms['sides'] = { type: "f", value: 8.0 };
+        kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / 16 };
+        kaleidoPass.renderToScreen = true;
+
+        COMPOSER.addPass(kaleidoPass);
+      
+      } else {
+        
+        COMPOSER = null;
+        
+      }
+      
+    }
 
   }, //input
 
@@ -100,7 +110,7 @@ EFFECTS.push({
 
       var td = TD[i] - 128;
       this.LINES.vertices[i].setY(td * 25);
-      
+
     }
 
     this.LINES.verticesNeedUpdate = true;

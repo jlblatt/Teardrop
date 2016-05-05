@@ -15,7 +15,7 @@ EFFECTS.push({
 
   }, //destroy
 
-  input: function() {
+  input: function(x, y, e) {
 
   }, //input
 
