@@ -107,6 +107,7 @@ window.addEventListener("load", function(event) {
   SONG.addEventListener("canplay", function() {
     AUDIOCTX = new AudioContext();
     SOURCE = AUDIOCTX.createMediaElementSource(SONG);
+    EFFECT.destroy();
     EFFECT.setup();
     SONG.play();
     player.classList.add("playing");

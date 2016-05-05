@@ -45,15 +45,15 @@ EFFECTS.push({
 
     //shaders
 
-    // COMPOSER = new THREE.EffectComposer(RENDERER);
-    // COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
+    COMPOSER = new THREE.EffectComposer(RENDERER);
+    COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
 
-    // var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
-    // kaleidoPass.uniforms['sides'] = { type: "f", value: 8.0 };
-    // kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / 16 };
-    // kaleidoPass.renderToScreen = true;
+    var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
+    kaleidoPass.uniforms['sides'] = { type: "f", value: 8.0 };
+    kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / 16 };
+    kaleidoPass.renderToScreen = true;
 
-    // COMPOSER.addPass(kaleidoPass);
+    COMPOSER.addPass(kaleidoPass);
     
   }, //setup
 
@@ -99,10 +99,8 @@ EFFECTS.push({
     for(var i = 0; i < this.LINES.vertices.length; i++) {
 
       var td = TD[i] - 128;
-
-      if(Math.abs(this.LINES.vertices[i].y) < Math.abs(td * 25)) this.LINES.vertices[i].setY(td * 25);
-      var newy = Math.abs(this.LINES.vertices[i].y) < 1 ? 0 : this.LINES.vertices[i].y * .92;
-      this.LINES.vertices[i].setY(newy);
+      this.LINES.vertices[i].setY(td * 25);
+      
     }
 
     this.LINES.verticesNeedUpdate = true;
