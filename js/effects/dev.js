@@ -8,10 +8,6 @@ EFFECTS.push({
   LINES: null,
   LINESMESH: null,
 
-  // COLORCYCLE: function(c) {
-  //   return c;
-  // },
-
   setup: function() {
 
     _newAnalyser(this.FFT, .5);
@@ -21,7 +17,7 @@ EFFECTS.push({
 
     for(var i = -(this.FFT / 2) + .5; i < this.FFT / 2; i++) {
 
-      var material = new THREE.MeshBasicMaterial({color: new THREE.Color(1, 1, 1)});
+      var material = new THREE.MeshBasicMaterial({color: new THREE.Color(.2, .2, .2)});
       var geometry = new THREE.CircleGeometry(1, 64);
       var mesh = new THREE.Mesh(geometry, material);
 
@@ -32,10 +28,10 @@ EFFECTS.push({
     }
 
     var geometry = new THREE.Geometry();
-    var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 255, 255)});
+    var material = new THREE.LineBasicMaterial({color: new THREE.Color(1, 1, 1)});
 
     for(var i = -(this.FFT  / 2) + .5; i < this.FFT / 2; i++) {
-      geometry.vertices.push(new THREE.Vector3((i * this.FFT) / 2, 0 , 10));
+      geometry.vertices.push(new THREE.Vector3((i * this.FFT) / 2, 0 , -10));
     }
 
     var mesh = new THREE.Line(geometry, material);
@@ -82,7 +78,7 @@ EFFECTS.push({
       } else {
         
         COMPOSER = null;
-        
+
       }
       
     }
@@ -100,11 +96,12 @@ EFFECTS.push({
       var newscaley = this.POINTS[i].scale.y < 0 ? 0 : this.POINTS[i].scale.y * .97;
       this.POINTS[i].scale.x = newscalex;
       this.POINTS[i].scale.y = newscaley;
-      //var newcolor = this.COLORCYCLE(this.POINTS[i].material.color);
-      //this.POINTS[i].material.color = newcolor ? newcolor : {r: 1, g: 1, b: 1}; 
+      this.POINTS[i].material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
     }
 
     if(!this.LINES) return;
+
+    this.LINESMESH.material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
 
     for(var i = 0; i < this.LINES.vertices.length; i++) {
 
