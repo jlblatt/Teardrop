@@ -1,6 +1,6 @@
 # Teardrop
 
-#### Audio Visualizer
+### Audio Visualizer
 
 Teardrop is the spiritual successor to [Raindrop](https://github.com/jlblatt/Raindrop):
 
@@ -8,7 +8,7 @@ Teardrop is the spiritual successor to [Raindrop](https://github.com/jlblatt/Rai
 
 Working with MIDI files proved unworkable for several reasons, so Teardrop is a similar concept using the Web Audio API and a more traditional method of visualizing an audio signal.
 
-##### Library Credits:
+#### Library Credits:
 
 [Ricardo Cabello](http://mrdoob.com/) (a.k.a. "Mr Doob") and many others - [three.js](http://threejs.org/) ([github](https://github.com/mrdoob/three.js/))
 
@@ -16,7 +16,7 @@ Working with MIDI files proved unworkable for several reasons, so Teardrop is a 
 
 [António Afonso](http://web.ist.utl.pt/antonio.afonso/www.aadsm.net/) - JS Media Tags ([github](https://github.com/aadsm/jsmediatags))
 
-##### Tutorial/Learning Credit:
+#### Tutorial/Learning Credit:
 
 Ian Reah - [Real-time analysis of streaming audio data with Web Audio API](http://ianreah.com/2013/02/28/Real-time-analysis-of-streaming-audio-data-with-Web-Audio-API.html)
 
@@ -26,10 +26,10 @@ MDN - [Visualizations with Web Audio API](https://developer.mozilla.org/en-US/do
 
 Airtight Interactive - [Intro to Pixel Shaders in Three.js ](https://www.airtightinteractive.com/2013/02/intro-to-pixel-shaders-in-three-js/)
 
-##### Asset Credit:
+#### Asset Credit:
 
 I included [STS9's Tap In at Stage AE in Pittsburgh](https://archive.org/details/sts92015-10-30.m934b_24bit) because [etree.org and archive.org are *insanely* awesome](https://archive.org/details/etree).  Yinz all should [donate](https://archive.org/donate/).
 
-##### License:
+#### License:
 
 MIT.  Free for any reason ✌(-‿-)✌
