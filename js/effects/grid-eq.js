@@ -10,6 +10,8 @@ EFFECTS.push({
   VOLUME_INDICATOR: [],
 
   setup: function() {
+
+    document.getElementById('help').innerHTML = "<strong>grid eq</strong><br />left click and drag to rotate<br />right click and drag to pan<br />mousewheel zooms";
     
     _newAnalyser(this.WIDTH * 2, .5);
 

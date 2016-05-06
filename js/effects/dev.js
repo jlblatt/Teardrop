@@ -10,6 +10,8 @@ EFFECTS.push({
 
   setup: function() {
 
+    document.getElementById('help').innerHTML = "";
+
     _newAnalyser(this.FFT, .5);
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);

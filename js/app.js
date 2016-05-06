@@ -15,7 +15,7 @@ window.addEventListener("load", function(event) {
 
   setTimeout(function() {
     document.getElementById('intro').classList.add('hidden');
-  }, 2000);
+  }, 5000);
 
   //init three.js
 
@@ -69,6 +69,10 @@ window.addEventListener("load", function(event) {
       if(player.classList.contains("playing")) SONG.pause();
       else SONG.play();
       document.getElementById('player').classList.toggle("playing");
+    }
+
+    if(e.which == 112) {
+      document.getElementById('help').classList.toggle('visible');
     }
 
   }
