@@ -1,6 +1,5 @@
 EFFECTS.push({
 
-  NAME: "dev",
   FFT: 128,
 
   POINTS: [],
@@ -10,7 +9,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "";
+    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />left click to cycle kaleidoscopes";
 
     _newAnalyser(this.FFT, .5);
 
@@ -63,7 +62,7 @@ EFFECTS.push({
 
   input: function(x, y, e) {
 
-    if(e.type == "click") {
+    if(e.type == "click" && e.which == 1) {
 
       if(!COMPOSER) {
 

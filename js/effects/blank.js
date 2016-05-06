@@ -1,7 +1,5 @@
 EFFECTS.push({
 
-  NAME: "blank",
-
   setup: function() {
 
     document.getElementById('help').innerHTML = "blank";

@@ -22,7 +22,7 @@ html, body {
   position: absolute;
   top: 18px;
   left: 18px;
-  color: #ddd;
+  color: #ccc;
   line-height: 18px;
   transition: opacity .25s linear;
   opacity: 0;
@@ -31,6 +31,7 @@ html, body {
 
   #help strong {
     font-weight: bold;
+    color: #fff;
   }
 
   #help.visible {
