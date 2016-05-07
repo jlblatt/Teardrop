@@ -13,9 +13,13 @@ window.addEventListener("load", function(event) {
 
   //fade intro
 
-  setTimeout(function() {
-    document.getElementById('intro').classList.add('hidden');
-  }, 5000);
+  if(document.location.search.indexOf('skipintro') >= 0) {
+    document.getElementById('intro').style.display = "none";
+  } else {
+    setTimeout(function() {
+      document.getElementById('intro').classList.add('hidden');
+    }, 5000);
+  }
 
   //init three.js
 
@@ -108,12 +112,18 @@ window.addEventListener("load", function(event) {
     return m + ':' + s;
   }
 
+  var firstPlay = true;
+
   SONG = new Audio();
   SONG.addEventListener("canplay", function() {
     AUDIOCTX = new AudioContext();
     SOURCE = AUDIOCTX.createMediaElementSource(SONG);
-    EFFECT.destroy();
-    EFFECT.setup();
+    if(firstPlay) {
+      EFFECT.setup();
+      firstPlay = false;
+    } else {
+      EFFECT.analyser();
+    }
     SONG.play();
     player.classList.add("playing");
     TOTALTIME = SONG.duration;

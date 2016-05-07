@@ -9,11 +9,17 @@ EFFECTS.push({
   THRESHOLD_INDICATOR: [],
   VOLUME_INDICATOR: [],
 
+  analyser: function() {
+
+    _newAnalyser(this.WIDTH * 2, .5);
+
+  }, //analyser
+
   setup: function() {
 
     document.getElementById('help').innerHTML = "<strong>grid eq</strong><br />left click and drag to rotate<br />right click and drag to pan<br />mousewheel zooms";
     
-    _newAnalyser(this.WIDTH * 2, .5);
+    this.analyser();
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;

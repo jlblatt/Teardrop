@@ -7,17 +7,22 @@ EFFECTS.push({
   LINES: null,
   LINESMESH: null,
 
-  K_STATES: [null, 4, 6, 8],
+  K_STATES: [null, 4, 6, 8, 10],
   K_STATE: 0,
 
   ROTATION: 0,
-  ROTATION_AMT: 0,
+
+  analyser: function() {
+
+    _newAnalyser(this.FFT, .5);
+
+  }, //analyser
 
   setup: function() {
 
     document.getElementById('help').innerHTML = "<strong>first contact</strong><br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle colors<br />click to change rotation";
 
-    _newAnalyser(this.FFT, .5);
+    this.analyser();
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = 2400;
@@ -31,7 +36,6 @@ EFFECTS.push({
       var mesh = new THREE.Mesh(geometry, material);
 
       mesh.position.x = (i * this.FFT) / 2;
-      mesh.originalX = (i * this.FFT) / 2;
 
       SCENE.add(mesh);
       this.POINTS.push(mesh);
@@ -89,24 +93,20 @@ EFFECTS.push({
 
       var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
       kaleidoPass.uniforms['sides'] = { type: "f", value: this.K_STATES[this.K_STATE] };
-      kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / (this.K_STATES[this.K_STATE] * 2) };
       kaleidoPass.renderToScreen = true;
 
       COMPOSER.addPass(kaleidoPass);
+    } else {
+      CAMERA.rotation.z = 0;
     }
 
     //rotations
 
     if(e.type == "click" && e.which == 1) {
-      this.ROTATION_AMT++;
-      if(this.ROTATION_AMT > 4) {
-        for(var i = 0; i < this.POINTS.length; i++) {
-          this.POINTS[i].position.y = 0;
-          this.POINTS[i].position.x = this.POINTS[i].originalX;
-        }
-        this.LINESMESH.rotation.z = 0;
-        this.ROTATION_AMT = 0;
+      this.ROTATION++;
+      if(this.ROTATION > 3) {
         this.ROTATION = 0;
+        CAMERA.rotation.z = 0;
       }
     }
 
@@ -124,14 +124,11 @@ EFFECTS.push({
       this.POINTS[i].scale.x = newscalex;
       this.POINTS[i].scale.y = newscaley;
       this.POINTS[i].material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
-      this.POINTS[i].position.x = this.POINTS[i].originalX * Math.cos(this.ROTATION);
-      this.POINTS[i].position.y = this.POINTS[i].originalX * Math.sin(this.ROTATION);
     }
 
     if(!this.LINES) return;
 
     this.LINESMESH.material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
-    this.LINESMESH.rotation.z = this.ROTATION;
 
     for(var i = 0; i < this.LINES.vertices.length; i++) {
       var td = TD[i] - 128;
@@ -140,7 +137,7 @@ EFFECTS.push({
 
     this.LINES.verticesNeedUpdate = true;
 
-    this.ROTATION += this.ROTATION_AMT / 50;
+    if(this.K_STATE > 0) CAMERA.rotation.z += this.ROTATION / 50;
 
   }, //tick
 

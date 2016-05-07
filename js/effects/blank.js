@@ -1,10 +1,16 @@
 EFFECTS.push({
 
+  analyser: function() {
+
+    _newAnalyser(1024, .5);
+
+  }, //analyser
+
   setup: function() {
 
     document.getElementById('help').innerHTML = "blank";
 
-    _newAnalyser(1024, .5);
+    this.analyser();
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = 600;
