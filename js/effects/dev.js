@@ -25,7 +25,7 @@ EFFECTS.push({
     this.analyser();
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
-    CAMERA.position.z = 2400;
+    CAMERA.position.z = 2000;
 
     //circles
 
@@ -92,21 +92,19 @@ EFFECTS.push({
       COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
 
       var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
-      kaleidoPass.uniforms['sides'] = { type: "f", value: this.K_STATES[this.K_STATE] };
+      kaleidoPass.uniforms.sides = { type: "f", value: this.K_STATES[this.K_STATE] };
+      kaleidoPass.uniforms.angle = { type: "f", value: 0 }
       kaleidoPass.renderToScreen = true;
 
       COMPOSER.addPass(kaleidoPass);
-    } else {
-      CAMERA.rotation.z = 0;
     }
 
     //rotations
 
-    if(e.type == "click" && e.which == 1) {
+    if(e.type == "click" && e.which == 1 && this.K_STATES[this.K_STATE]) {
       this.ROTATION++;
       if(this.ROTATION > 3) {
         this.ROTATION = 0;
-        CAMERA.rotation.z = 0;
       }
     }
 
@@ -137,7 +135,9 @@ EFFECTS.push({
 
     this.LINES.verticesNeedUpdate = true;
 
-    if(this.K_STATE > 0) CAMERA.rotation.z += this.ROTATION / 50;
+    if(this.ROTATION && COMPOSER) {
+      COMPOSER.passes[1].uniforms.angle.value += this.ROTATION / 60;
+    }
 
   }, //tick
 
@@ -148,7 +148,7 @@ EFFECTS.push({
   resize: function() {
 
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
-    CAMERA.position.z = 2400;
+    CAMERA.position.z = 2000;
     
     this.LINES.verticesNeedUpdate = true;
 
