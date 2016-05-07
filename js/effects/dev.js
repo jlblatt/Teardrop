@@ -11,6 +11,7 @@ EFFECTS.push({
   K_STATE: 0,
 
   ROTATION: 0,
+  ROTATION_AMT: 0,
 
   setup: function() {
 
@@ -21,18 +22,22 @@ EFFECTS.push({
     CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     CAMERA.position.z = 2400;
 
+    //circles
+
     for(var i = -(this.FFT / 2) + .5; i < this.FFT / 2; i++) {
 
       var material = new THREE.MeshBasicMaterial({color: new THREE.Color(.2, .2, .2)});
       var geometry = new THREE.CircleGeometry(1, 64);
       var mesh = new THREE.Mesh(geometry, material);
 
-      //mesh.position.x = (i * this.FFT) / 2;
-      mesh.translateX((i * this.FFT) / 2);
+      mesh.position.x = (i * this.FFT) / 2;
+      mesh.originalX = (i * this.FFT) / 2;
 
       SCENE.add(mesh);
       this.POINTS.push(mesh);
     }
+
+    //lines
 
     var geometry = new THREE.Geometry();
     var material = new THREE.LineBasicMaterial({color: new THREE.Color(1, 1, 1)});
@@ -93,13 +98,15 @@ EFFECTS.push({
     //rotations
 
     if(e.type == "click" && e.which == 1) {
-      this.ROTATION++;
-      if(this.ROTATION > 4) {
-        this.ROTATION = 0;
+      this.ROTATION_AMT++;
+      if(this.ROTATION_AMT > 4) {
         for(var i = 0; i < this.POINTS.length; i++) {
-          //complicated
+          this.POINTS[i].position.y = 0;
+          this.POINTS[i].position.x = this.POINTS[i].originalX;
         }
         this.LINESMESH.rotation.z = 0;
+        this.ROTATION_AMT = 0;
+        this.ROTATION = 0;
       }
     }
 
@@ -117,13 +124,14 @@ EFFECTS.push({
       this.POINTS[i].scale.x = newscalex;
       this.POINTS[i].scale.y = newscaley;
       this.POINTS[i].material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
-      //complicated
+      this.POINTS[i].position.x = this.POINTS[i].originalX * Math.cos(this.ROTATION);
+      this.POINTS[i].position.y = this.POINTS[i].originalX * Math.sin(this.ROTATION);
     }
 
     if(!this.LINES) return;
 
     this.LINESMESH.material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
-    this.LINESMESH.rotation.z += this.ROTATION / 40;
+    this.LINESMESH.rotation.z = this.ROTATION;
 
     for(var i = 0; i < this.LINES.vertices.length; i++) {
       var td = TD[i] - 128;
@@ -131,6 +139,8 @@ EFFECTS.push({
     }
 
     this.LINES.verticesNeedUpdate = true;
+
+    this.ROTATION += this.ROTATION_AMT / 50;
 
   }, //tick
 
