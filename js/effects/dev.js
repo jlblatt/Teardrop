@@ -10,9 +10,11 @@ EFFECTS.push({
   K_STATES: [null, 4, 6, 8],
   K_STATE: 0,
 
+  ROTATION: 0,
+
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />left click to cycle kaleidoscopes";
+    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle colors<br />click to change rotation";
 
     _newAnalyser(this.FFT, .5);
 
@@ -25,7 +27,8 @@ EFFECTS.push({
       var geometry = new THREE.CircleGeometry(1, 64);
       var mesh = new THREE.Mesh(geometry, material);
 
-      mesh.position.x = (i * this.FFT) / 2;
+      //mesh.position.x = (i * this.FFT) / 2;
+      mesh.translateX((i * this.FFT) / 2);
 
       SCENE.add(mesh);
       this.POINTS.push(mesh);
@@ -65,6 +68,8 @@ EFFECTS.push({
 
   input: function(x, y, e) {
 
+    //kaleidoscopes
+
     if(e.which == 38) this.K_STATE++;
     else if(e.which == 40) this.K_STATE--;
 
@@ -85,6 +90,19 @@ EFFECTS.push({
       COMPOSER.addPass(kaleidoPass);
     }
 
+    //rotations
+
+    if(e.type == "click" && e.which == 1) {
+      this.ROTATION++;
+      if(this.ROTATION > 4) {
+        this.ROTATION = 0;
+        for(var i = 0; i < this.POINTS.length; i++) {
+          //complicated
+        }
+        this.LINESMESH.rotation.z = 0;
+      }
+    }
+
   }, //input
 
   tick: function() {
@@ -99,17 +117,17 @@ EFFECTS.push({
       this.POINTS[i].scale.x = newscalex;
       this.POINTS[i].scale.y = newscaley;
       this.POINTS[i].material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
+      //complicated
     }
 
     if(!this.LINES) return;
 
     this.LINESMESH.material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
+    this.LINESMESH.rotation.z += this.ROTATION / 40;
 
     for(var i = 0; i < this.LINES.vertices.length; i++) {
-
       var td = TD[i] - 128;
       this.LINES.vertices[i].setY(td * 25);
-
     }
 
     this.LINES.verticesNeedUpdate = true;
