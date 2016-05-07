@@ -7,6 +7,9 @@ EFFECTS.push({
   LINES: null,
   LINESMESH: null,
 
+  K_STATES: [null, 4, 6, 8],
+  K_STATE: 0,
+
   setup: function() {
 
     document.getElementById('help').innerHTML = "<strong>first contact</strong><br />left click to cycle kaleidoscopes";
@@ -62,26 +65,24 @@ EFFECTS.push({
 
   input: function(x, y, e) {
 
-    if(e.type == "click" && e.which == 1) {
+    if(e.which == 38) this.K_STATE++;
+    else if(e.which == 40) this.K_STATE--;
 
-      if(!COMPOSER) {
+    if(this.K_STATE < 0) this.K_STATE = this.K_STATES.length - 1;
+    if(this.K_STATE > this.K_STATES.length - 1) this.K_STATE = 0;
 
-        COMPOSER = new THREE.EffectComposer(RENDERER);
-        COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
+    COMPOSER = null;
 
-        var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
-        kaleidoPass.uniforms['sides'] = { type: "f", value: 8.0 };
-        kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / 16 };
-        kaleidoPass.renderToScreen = true;
+    if(this.K_STATES[this.K_STATE]) {
+      COMPOSER = new THREE.EffectComposer(RENDERER);
+      COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
 
-        COMPOSER.addPass(kaleidoPass);
-      
-      } else {
-        
-        COMPOSER = null;
+      var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
+      kaleidoPass.uniforms['sides'] = { type: "f", value: this.K_STATES[this.K_STATE] };
+      kaleidoPass.uniforms['angle'] = { type: "f", value: (2 * Math.PI) / (this.K_STATES[this.K_STATE] * 2) };
+      kaleidoPass.renderToScreen = true;
 
-      }
-      
+      COMPOSER.addPass(kaleidoPass);
     }
 
   }, //input
