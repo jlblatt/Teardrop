@@ -7,18 +7,26 @@ EFFECTS.push({
   LINES: null,
   LINESMESH: null,
 
+  ROTATION: 0,
+
   K_STATES: [null, 4, 6, 8, 10],
   K_PTR: 0,
 
-  ROTATION: 0,
-
   THEMES: [
-    [0x333333, 0x666666, 0x999999, 0xcccccc],
-    [0x000000, 0x001111, 0x002222, 0x003333, 0x004444, 0x005555, 0x006666, 0x007777, 0x008888, 0x009999, 0x00aaaa, 0x00bbbb, 0x00cccc, 0x00dddd, 0x00eeee, 0x00ffff, 0xfffff],
+    [0x111111, 0x333333, 0x555555, 0x777777, 0x999999, 0xbbbbbb, 0xdddddd],
+    [0x001111, 0x002222, 0x003333, 0x004444, 0x005555, 0x006666, 0x007777, 0x008888, 0x009999, 0x00aaaa, 0x00bbbb, 0x00cccc, 0x00dddd, 0x00eeee, 0x00ffff, 0x00eeee, 0x00dddd, 0x00cccc, 0x00bbbb, 0x00aaaa, 0x009999, 0x008888, 0x007777, 0x006666, 0x005555, 0x004444, 0x003333, 0x002222, 0x001111],
     []
   ],
-
   T_PTR: 0,
+
+  BLENDS: [
+    { blend: THREE.NoBlending, opacity: 1 },
+    { blend: THREE.NormalBlending, opacity: .8 },
+    { blend: THREE.AdditiveBlending, opacity: .8 },
+    { blend: THREE.SubtractiveBlending, opacity: .8 },
+    { blend: THREE.MultiplyBlending, opacity: .8 }
+  ],
+  B_PTR: 0,
 
   APPLY_THEME: function() {
 
@@ -42,6 +50,10 @@ EFFECTS.push({
     
   },
 
+  APPLY_BLEND: function() {
+
+  },
+
   /////////////////////////////////////////////////////////////////////////////////
 
   analyser: function() {
@@ -52,7 +64,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle colors<br />click to change rotation";
+    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />number keys to change theme color<br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle blend modes<br />right shift to change rotation";
 
     this.analyser();
 
@@ -63,7 +75,7 @@ EFFECTS.push({
 
     for(var i = -(this.FFT / 2) + .5; i < this.FFT / 2; i++) {
 
-      var material = new THREE.MeshBasicMaterial({color: new THREE.Color(.2, .2, .2)});
+      var material = new THREE.MeshBasicMaterial({transparent: true, opacity: 1});
       var geometry = new THREE.CircleGeometry(1, 64);
       var mesh = new THREE.Mesh(geometry, material);
 
@@ -76,7 +88,7 @@ EFFECTS.push({
     //lines
 
     var geometry = new THREE.Geometry();
-    var material = new THREE.LineBasicMaterial({color: new THREE.Color(1, 1, 1)});
+    var material = new THREE.LineBasicMaterial({transparent: true, opacity: 1});
 
     for(var i = -(this.FFT  / 2) + .5; i < this.FFT / 2; i++) {
       geometry.vertices.push(new THREE.Vector3((i * this.FFT) / 2, 0 , -10));
@@ -88,6 +100,7 @@ EFFECTS.push({
     this.LINESMESH = mesh;
 
     this.APPLY_THEME();
+    this.APPLY_BLEND();
     
   }, //setup
 
@@ -117,15 +130,28 @@ EFFECTS.push({
 
       //colors
 
+      if(e.which >= 49 && e.which <= (49 + this.THEMES.length - 1)) {
+        this.T_PTR = e.which - 49;
+        this.APPLY_THEME();
+
+      } else if(e.which >= 97 && e.which <= (97 + this.THEMES.length - 1)) {
+        
+        this.T_PTR = e.which - 97;
+        this.APPLY_THEME();
+
+      }
+
+      //blends
+
       if(e.which == 37 || e.which == 39) {
 
-        if(e.which == 39) this.T_PTR++;
-        else if(e.which == 37) this.T_PTR--;
+        if(e.which == 39) this.B_BTR++;
+        else if(e.which == 37) this.B_BTR--;
 
-        if(this.T_PTR < 0) this.T_PTR = this.THEMES.length - 1;
-        if(this.T_PTR > this.THEMES.length - 1) this.T_PTR = 0;
+        if(this.B_BTR < 0) this.B_BTR = this.THEMES.length - 1;
+        if(this.B_BTR > this.THEMES.length - 1) this.B_BTR = 0;
 
-        this.APPLY_THEME();
+        this.APPLY_BLEND();
 
       }
 
@@ -155,15 +181,9 @@ EFFECTS.push({
 
       }
 
-    }
-    
-    //mouse
-
-    if(e.type == "click") {
-
       //rotations
     
-      if(e.which == 1 && this.K_STATES[this.K_PTR]) {
+      if(e.which == 16 && this.K_STATES[this.K_PTR]) {
         this.ROTATION++;
         if(this.ROTATION > 3) {
           this.ROTATION = 0;

@@ -22,7 +22,7 @@ html, body {
   position: absolute;
   top: 18px;
   left: 18px;
-  color: #ccc;
+  color: #bbb;
   line-height: 18px;
   transition: opacity .25s linear;
   opacity: 0;
@@ -30,6 +30,10 @@ html, body {
 }
 
   #help strong {
+    display: inline-block;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
     font-weight: bold;
     color: #fff;
   }
