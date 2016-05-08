@@ -22,9 +22,7 @@ EFFECTS.push({
   BLENDS: [
     { blend: THREE.NoBlending, opacity: 1 },
     { blend: THREE.NormalBlending, opacity: .8 },
-    { blend: THREE.AdditiveBlending, opacity: .8 },
-    { blend: THREE.SubtractiveBlending, opacity: .8 },
-    { blend: THREE.MultiplyBlending, opacity: .8 }
+    { blend: THREE.AdditiveBlending, opacity: .8 }
   ],
   B_PTR: 0,
 
@@ -51,6 +49,13 @@ EFFECTS.push({
   },
 
   APPLY_BLEND: function() {
+
+    console.log(this.BLENDS[this.B_PTR]);
+
+    for(var i = 0; i < this.POINTS.length; i++) {
+      this.POINTS[i].material.blending = this.BLENDS[this.B_PTR].blend;
+      this.POINTS[i].material.opacity = this.BLENDS[this.B_PTR].opacity;
+    }
 
   },
 
@@ -145,11 +150,11 @@ EFFECTS.push({
 
       if(e.which == 37 || e.which == 39) {
 
-        if(e.which == 39) this.B_BTR++;
-        else if(e.which == 37) this.B_BTR--;
+        if(e.which == 39) this.B_PTR++;
+        else if(e.which == 37) this.B_PTR--;
 
-        if(this.B_BTR < 0) this.B_BTR = this.THEMES.length - 1;
-        if(this.B_BTR > this.THEMES.length - 1) this.B_BTR = 0;
+        if(this.B_PTR < 0) this.B_PTR = this.BLENDS.length - 1;
+        if(this.B_PTR > this.BLENDS.length - 1) this.B_PTR = 0;
 
         this.APPLY_BLEND();
 
