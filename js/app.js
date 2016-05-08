@@ -59,7 +59,6 @@ window.addEventListener("load", function(event) {
   window.onkeydown = function(e) {
     e.clientX = Math.floor(Math.random() * window.innerWidth);
     e.clientY = Math.floor(Math.random() * window.innerHeight);
-    inputEvent(e);
 
     if(e.which == 13) {
       EFFECT.destroy();
@@ -78,6 +77,8 @@ window.addEventListener("load", function(event) {
     if(e.which == 112) {
       document.getElementById('help').classList.toggle('visible');
     }
+
+    inputEvent(e);
 
   }
 
@@ -221,7 +222,7 @@ function loop(time) {
 
   //visuals
 
-  if(!ANALYSER) return;
+  if(!ANALYSER || !EFFECT) return;
 
   ANALYSER.getByteFrequencyData(FD);
   ANALYSER.getByteTimeDomainData(TD);

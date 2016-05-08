@@ -9,6 +9,8 @@ EFFECTS.push({
   THRESHOLD_INDICATOR: [],
   VOLUME_INDICATOR: [],
 
+  /////////////////////////////////////////////////////////////////////////////////
+
   analyser: function() {
 
     _newAnalyser(this.WIDTH * 2, .5);
