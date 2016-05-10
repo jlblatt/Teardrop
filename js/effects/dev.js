@@ -35,23 +35,20 @@ EFFECTS.push({
     }
 
     for(var i = 0; i < this.POINTS.length; i++) {
-      this.POINTS[i].colorQueue = cq;
+      this.POINTS[i].colorQueue = cq.slice();
       if(cq.length> 0) {
         var c = cq.shift();
         cq.push(c);
       }
     }
 
-    this.LINESMESH.colorQueue = cq;
+    this.LINESMESH.colorQueue = cq.slice();
 
     this.beat();
     
   },
 
   APPLY_BLEND: function() {
-
-    console.log(this.BLENDS[this.B_PTR]);
-
     for(var i = 0; i < this.POINTS.length; i++) {
       this.POINTS[i].material.blending = this.BLENDS[this.B_PTR].blend;
       this.POINTS[i].material.opacity = this.BLENDS[this.B_PTR].opacity;
@@ -207,6 +204,9 @@ EFFECTS.push({
 
     for(var i = 0; i < this.POINTS.length; i++) {
       var fd = FD[Math.abs(i - this.FFT / 2)];
+
+      //if(!fd) continue;
+
       if(this.POINTS[i].scale.x < fd) this.POINTS[i].scale.x = fd * 2.5;
       if(this.POINTS[i].scale.y < fd) this.POINTS[i].scale.y = fd * 2.5;
       var newscalex = this.POINTS[i].scale.x < 0 ? 0 : this.POINTS[i].scale.x * .97;
@@ -242,9 +242,9 @@ EFFECTS.push({
 
     if(!this.LINES) return;
 
-    if(this.LINESMESH.colorQueue.length > 0) {
-      this.LINESMESH.material.color = this.LINESMESH.colorQueue[0];
+    if("colorQueue" in this.LINESMESH && this.LINESMESH.colorQueue.length > 0) {
       var c = this.LINESMESH.colorQueue.shift();
+      this.LINESMESH.material.color = c;
       this.LINESMESH.colorQueue.push(c);
     } else {
       this.LINESMESH.material.color = new THREE.Color(Math.random(), Math.random(), Math.random());

@@ -232,11 +232,11 @@ function loop(time) {
     sum += FD[i];
   }
 
-  VOLUME += ((sum / FD.length)  - VOLUME) * 0.12;
+  VOLUME += ((sum / FD.length)  - VOLUME) * 0.2;
 
   if(VOLUME > THRESHOLD && VOLUME > 50 && time - LASTBEAT > 300) {
     EFFECT.beat();
-    THRESHOLD = VOLUME * 1.3;
+    THRESHOLD = VOLUME * 1.22;
     LASTBEAT = time;
   }
 
