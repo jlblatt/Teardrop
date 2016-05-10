@@ -205,12 +205,10 @@ EFFECTS.push({
     for(var i = 0; i < this.POINTS.length; i++) {
       var fd = FD[Math.abs(i - this.FFT / 2)];
 
-      //if(!fd) continue;
-
       if(this.POINTS[i].scale.x < fd) this.POINTS[i].scale.x = fd * 2.5;
       if(this.POINTS[i].scale.y < fd) this.POINTS[i].scale.y = fd * 2.5;
-      var newscalex = this.POINTS[i].scale.x < 0 ? 0 : this.POINTS[i].scale.x * .97;
-      var newscaley = this.POINTS[i].scale.y < 0 ? 0 : this.POINTS[i].scale.y * .97;
+      var newscalex = this.POINTS[i].scale.x < 0.1 ? 0.1 : this.POINTS[i].scale.x * .97;
+      var newscaley = this.POINTS[i].scale.y < 0.1 ? 0.1 : this.POINTS[i].scale.y * .97;
       this.POINTS[i].scale.x = newscalex;
       this.POINTS[i].scale.y = newscaley;
     }
