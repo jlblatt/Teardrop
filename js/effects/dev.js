@@ -1,5 +1,7 @@
 EFFECTS.push({
 
+  SCENE: null, CAMERA: null, RENDERER: null, COMPOSER: null,
+
   FFT: 128,
 
   POINTS: [],
@@ -67,12 +69,19 @@ EFFECTS.push({
 
   setup: function() {
 
+    this.SCENE = new THREE.Scene();
+
+    this.RENDERER = new THREE.WebGLRenderer();
+    this.RENDERER.setSize(window.innerWidth, window.innerHeight);
+
+    document.body.appendChild(this.RENDERER.domElement);
+
     document.getElementById('help').innerHTML = "<strong>first contact</strong><br />number keys to change theme color<br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle blend modes<br />right shift to change rotation";
 
     this.analyser();
 
-    CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
-    CAMERA.position.z = 2000;
+    this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+    this.CAMERA.position.z = 2000;
 
     //circles
 
@@ -84,7 +93,7 @@ EFFECTS.push({
 
       mesh.position.x = (i * this.FFT) / 2;
 
-      SCENE.add(mesh);
+      this.SCENE.add(mesh);
       this.POINTS.push(mesh);
     }
 
@@ -98,7 +107,7 @@ EFFECTS.push({
     }
 
     var mesh = new THREE.Line(geometry, material);
-    SCENE.add(mesh);
+    this.SCENE.add(mesh);
     this.LINES = geometry;
     this.LINESMESH = mesh;
 
@@ -110,22 +119,24 @@ EFFECTS.push({
   destroy: function() {
 
     for(var i = 0; i < this.POINTS.length; i++) {
-      SCENE.remove(this.POINTS[i]);
+      this.SCENE.remove(this.POINTS[i]);
     }
 
     this.POINTS = [];
 
-    SCENE.remove(this.LINES);
+    this.SCENE.remove(this.LINES);
     this.LINES = null;
 
-    SCENE.remove(this.LINESMESH);
+    this.SCENE.remove(this.LINESMESH);
     this.LINESMESH = null;
 
-    COMPOSER = null;
+    this.COMPOSER = null;
+
+    document.body.removeChild(this.RENDERER.domElement);
 
   }, //destroy
 
-  input: function(x, y, e) {
+  input: function(e) {
 
     //keys
 
@@ -168,18 +179,18 @@ EFFECTS.push({
         if(this.K_PTR < 0) this.K_PTR = this.K_STATES.length - 1;
         if(this.K_PTR > this.K_STATES.length - 1) this.K_PTR = 0;
 
-        COMPOSER = null;
+        this.COMPOSER = null;
 
         if(this.K_STATES[this.K_PTR]) {
-          COMPOSER = new THREE.EffectComposer(RENDERER);
-          COMPOSER.addPass(new THREE.RenderPass(SCENE, CAMERA));
+          this.COMPOSER = new THREE.EffectComposer(this.RENDERER);
+          this.COMPOSER.addPass(new THREE.RenderPass(this.SCENE, this.CAMERA));
 
           var kaleidoPass = new THREE.ShaderPass(THREE.KaleidoShader);
           kaleidoPass.uniforms.sides = { type: "f", value: this.K_STATES[this.K_PTR] };
           kaleidoPass.uniforms.angle = { type: "f", value: 0 }
           kaleidoPass.renderToScreen = true;
 
-          COMPOSER.addPass(kaleidoPass);
+          this.COMPOSER.addPass(kaleidoPass);
         }
 
       }
@@ -199,8 +210,8 @@ EFFECTS.push({
 
   tick: function() {
 
-    if(this.ROTATION && COMPOSER) {
-      COMPOSER.passes[1].uniforms.angle.value += this.ROTATION / 100;
+    if(this.ROTATION && this.COMPOSER) {
+      this.COMPOSER.passes[1].uniforms.angle.value += this.ROTATION / 100;
     }
 
     for(var i = 0; i < this.POINTS.length; i++) {
@@ -222,6 +233,9 @@ EFFECTS.push({
     }
 
     this.LINES.verticesNeedUpdate = true;
+
+    if(this.COMPOSER) this.COMPOSER.render();
+    else this.RENDERER.render(this.SCENE, this.CAMERA);
 
   }, //tick
 
@@ -253,8 +267,12 @@ EFFECTS.push({
 
   resize: function() {
 
-    CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
-    CAMERA.position.z = 2000;
+    this.RENDERER.setSize(window.innerWidth, window.innerHeight);
+    this.COMPOSER.setSize(window.innerWidth, window.innerHeight);
+
+    this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+    this.CAMERA.position.z = 2000;
+    this.CAMERA.updateProjectionMatrix();
     
     this.LINES.verticesNeedUpdate = true;
 

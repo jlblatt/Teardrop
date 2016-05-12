@@ -1,5 +1,7 @@
 EFFECTS.push({
 
+  SCENE: null, CAMERA: null, RENDERER: null,
+
   HEIGHT: 20,
   WIDTH: 32,
   SIZE: 18,
@@ -19,14 +21,21 @@ EFFECTS.push({
 
   setup: function() {
 
+    this.SCENE = new THREE.Scene();
+
+    this.RENDERER = new THREE.WebGLRenderer();
+    this.RENDERER.setSize(window.innerWidth, window.innerHeight);
+
+    document.body.appendChild(this.RENDERER.domElement);
+
     document.getElementById('help').innerHTML = "<strong>grid eq</strong><br />left click and drag to rotate<br />right click and drag to pan<br />mousewheel zooms";
     
     this.analyser();
 
-    CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
-    CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;
+    this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+    this.CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;
 
-    this.CONTROLS = new THREE.OrbitControls(CAMERA, RENDERER.domElement);
+    this.CONTROLS = new THREE.OrbitControls(this.CAMERA, this.RENDERER.domElement);
     
     for(var i = -this.WIDTH; i < this.WIDTH; i++) {
 
@@ -43,7 +52,7 @@ EFFECTS.push({
         mesh.position.x = (i * (this.SIZE * 1.35) + (this.SIZE * 1.35 / 2));
         mesh.position.y = (j * (this.SIZE * 1.35) + (this.SIZE * 1.35 / 2));
 
-        SCENE.add(mesh);
+        this.SCENE.add(mesh);
         this.EQ[this.EQ.length - 1].push(mesh);
 
       }
@@ -58,21 +67,21 @@ EFFECTS.push({
       var b_geometry = new THREE.BoxGeometry(this.SIZE * 4, this.SIZE, this.SIZE);
       b_geometry.translate(((mult * this.WIDTH + (mult * 3)) * this.SIZE * 1.35), 0, 0);
       var b_mesh = new THREE.Mesh(b_geometry, b_material);
-      SCENE.add(b_mesh);
+      this.SCENE.add(b_mesh);
       this.BEAT_INDICATOR.push(b_mesh);
 
       var t_material = new THREE.MeshBasicMaterial({color: new THREE.Color(1, 1, 1), transparent: true, opacity: .66});
       var t_geometry = new THREE.BoxGeometry(this.SIZE * 4, this.SIZE, this.SIZE);
       t_geometry.translate(((mult * this.WIDTH + (mult * 7)) * this.SIZE * 1.35), 0, 0);
       var t_mesh = new THREE.Mesh(t_geometry, t_material);
-      SCENE.add(t_mesh);
+      this.SCENE.add(t_mesh);
       this.THRESHOLD_INDICATOR.push(t_mesh);
 
       var v_material = new THREE.MeshBasicMaterial({color: new THREE.Color(1, 1, 1), transparent: true, opacity: .33});
       var v_geometry = new THREE.BoxGeometry(this.SIZE * 4, this.SIZE, this.SIZE);
       v_geometry.translate(((mult * this.WIDTH + (mult * 11)) * this.SIZE * 1.35), 0, 0);
       var v_mesh = new THREE.Mesh(v_geometry, v_material);
-      SCENE.add(v_mesh);
+      this.SCENE.add(v_mesh);
       this.VOLUME_INDICATOR.push(v_mesh);
 
     }
@@ -83,7 +92,7 @@ EFFECTS.push({
 
     for(var i = 0; i < this.WIDTH * 2; i++) {
       for(var j = 0; j < this.HEIGHT; j++) {
-        SCENE.remove(this.EQ[i][j]);
+        this.SCENE.remove(this.EQ[i][j]);
       }
     }
 
@@ -91,14 +100,16 @@ EFFECTS.push({
 
     var i = 2;
     while(i--) {
-      SCENE.remove(this.BEAT_INDICATOR.pop());
-      SCENE.remove(this.THRESHOLD_INDICATOR.pop());
-      SCENE.remove(this.VOLUME_INDICATOR.pop());
+      this.SCENE.remove(this.BEAT_INDICATOR.pop());
+      this.SCENE.remove(this.THRESHOLD_INDICATOR.pop());
+      this.SCENE.remove(this.VOLUME_INDICATOR.pop());
     }
 
+    document.body.removeChild(this.RENDERER.domElement);
+    
   }, //destroy
 
-  input: function(x, y, e) {
+  input: function(e) {
   
   },
 
@@ -137,6 +148,8 @@ EFFECTS.push({
       this.VOLUME_INDICATOR[i].position.y = 2 * ((this.HEIGHT * this.SIZE * (VOLUME / 256)) - (this.HEIGHT * this.SIZE / 4));
     }
 
+    this.RENDERER.render(this.SCENE, this.CAMERA);
+
   }, //tick
 
   beat: function() {
@@ -149,10 +162,13 @@ EFFECTS.push({
 
   resize: function() {
 
-    CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
-    CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;
+    this.RENDERER.setSize(window.innerWidth, window.innerHeight);  
 
-    this.CONTROLS = new THREE.OrbitControls(CAMERA, RENDERER.domElement);
+    this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+    this.CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;
+    this.CAMERA.updateProjectionMatrix();
+
+    this.CONTROLS = new THREE.OrbitControls(this.CAMERA, this.RENDERER.domElement);
 
   }
   

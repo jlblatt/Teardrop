@@ -1,5 +1,4 @@
 var
-  SCENE, CAMERA, RENDERER, COMPOSER,
   SONG, SOURCE, AUDIOCTX, ANALYSER, FD, TD, TOTALTIME = 0,
   VOLUME = 0, THRESHOLD = 0, LASTBEAT = 0,
   EFFECTS = [], EFFECT, EPTR = 0,
@@ -21,15 +20,6 @@ window.addEventListener("load", function(event) {
     }, 5000);
   }
 
-  //init three.js
-
-  SCENE = new THREE.Scene();
-
-  RENDERER = new THREE.WebGLRenderer();
-  RENDERER.setSize(window.innerWidth, window.innerHeight);
-
-  document.body.appendChild(RENDERER.domElement);
-
   //init effects
 
   EFFECT = EFFECTS[EPTR];
@@ -37,14 +27,7 @@ window.addEventListener("load", function(event) {
   //setup input
 
   function inputEvent(e) {
-    // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
-    var vector = new THREE.Vector3();
-    vector.set((e.clientX / window.innerWidth)  * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
-    vector.unproject(CAMERA);
-    var dir = vector.sub(CAMERA.position).normalize();
-    var distance = -CAMERA.position.z / dir.z;
-    var pos = CAMERA.position.clone().add(dir.multiplyScalar(distance));
-    EFFECT.input(pos.x, pos.y, e);
+    EFFECT.input(e);
   }
 
   window.onmousemove = inputEvent;
@@ -81,15 +64,6 @@ window.addEventListener("load", function(event) {
     inputEvent(e);
 
   }
-
-  //window resize
-
-  window.onresize = function() {
-    RENDERER.setSize(window.innerWidth, window.innerHeight);
-    if(COMPOSER) COMPOSER.setSize(window.innerWidth, window.innerHeight);
-    EFFECT.resize();
-    //CAMERA.updateProjectionMatrix();
-  };
 
   //setup audio
   
@@ -197,12 +171,6 @@ window.addEventListener("load", function(event) {
 });
 
 ////////////////////////////////
-// SCREEN MESSAGE
-////////////////////////////////
-
-
-
-////////////////////////////////
 // MAIN LOOP
 ////////////////////////////////
 
@@ -243,9 +211,6 @@ function loop(time) {
   EFFECT.tick();
 
   TWEEN.update(time);
-
-  if(COMPOSER) COMPOSER.render();
-  else RENDERER.render(SCENE, CAMERA);
 
   THRESHOLD *= 0.99;
 
