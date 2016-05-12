@@ -268,7 +268,7 @@ EFFECTS.push({
   resize: function() {
 
     this.RENDERER.setSize(window.innerWidth, window.innerHeight);
-    this.COMPOSER.setSize(window.innerWidth, window.innerHeight);
+    if(this.COMPOSER) this.COMPOSER.setSize(window.innerWidth, window.innerHeight);
 
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = 2000;

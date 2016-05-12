@@ -65,6 +65,12 @@ window.addEventListener("load", function(event) {
 
   }
 
+  //window resize
+
+  window.onresize = function() {
+    EFFECT.resize();
+  };
+
   //setup audio
   
   window._newAnalyser = function (fftSize, smoothingTimeConstant) {
