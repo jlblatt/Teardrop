@@ -10,16 +10,6 @@ var
 
 window.addEventListener("load", function(event) { 
 
-  //fade intro
-
-  if(document.location.search.indexOf('skipintro') >= 0) {
-    document.getElementById('intro').style.display = "none";
-  } else {
-    setTimeout(function() {
-      document.getElementById('intro').classList.add('hidden');
-    }, 5000);
-  }
-
   //init effects
 
   EFFECT = EFFECTS[EPTR];
@@ -65,27 +55,30 @@ window.addEventListener("load", function(event) {
 
   }
 
-  //window resize
-
   window.onresize = function() {
     EFFECT.resize();
   };
 
   //setup audio
   
-  window._newAnalyser = function (fftSize, smoothingTimeConstant) {
+  window._NEWANALYSER = function () {
+    var FFT = "FFT" in EFFECT ? EFFECT.FFT : 1024;
+    var STC = "STC" in EFFECT ? EFFECT.STC : 0.5;
+
     ANALYSER = AUDIOCTX.createAnalyser();
     SOURCE.connect(ANALYSER);
     ANALYSER.connect(AUDIOCTX.destination);
-    ANALYSER.fftSize = fftSize;
-    ANALYSER.smoothingTimeConstant = smoothingTimeConstant;
+    ANALYSER.fftSize = FFT;
+    ANALYSER.smoothingTimeConstant = STC;
+
     FD = new Uint8Array(ANALYSER.frequencyBinCount);
-    TD = new Uint8Array(fftSize);
+    TD = new Uint8Array(FFT);
+
     ANALYSER.getByteFrequencyData(FD);
     ANALYSER.getByteTimeDomainData(TD);
   }
 
-  window._formatTime = function(t) {
+  window._FORMATTIME = function(t) {
     var m = Math.floor(t / 60);
     var s = Math.floor(t % 60);
     if(m < 10) m = '0' + m;
@@ -103,7 +96,7 @@ window.addEventListener("load", function(event) {
       EFFECT.setup();
       firstPlay = false;
     } else {
-      EFFECT.analyser();
+      _NEWANALYSER();
     }
     SONG.play();
     player.classList.add("playing");
@@ -170,6 +163,16 @@ window.addEventListener("load", function(event) {
     }
   }
 
+  //fade intro
+
+  if(document.location.search.indexOf('skipintro') >= 0) {
+    document.getElementById('intro').style.display = "none";
+  } else {
+    setTimeout(function() {
+      document.getElementById('intro').classList.add('hidden');
+    }, 5000);
+  }
+
   //let's go!
 
   loop();
@@ -222,7 +225,7 @@ function loop(time) {
 
   //player
 
-  document.getElementById("curr-time").innerHTML = _formatTime(SONG.currentTime);
-  document.getElementById("total-time").innerHTML = _formatTime(TOTALTIME);
+  document.getElementById("curr-time").innerHTML = _FORMATTIME(SONG.currentTime);
+  document.getElementById("total-time").innerHTML = _FORMATTIME(TOTALTIME);
   document.getElementById("progress").style.width = (SONG.currentTime * 100 / TOTALTIME) + '%';
 }

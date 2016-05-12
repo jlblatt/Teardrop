@@ -2,24 +2,25 @@ EFFECTS.push({
 
   SCENE: null, CAMERA: null, RENDERER: null,
 
+  FFT: 64, //should be double the width
+
   HEIGHT: 20,
   WIDTH: 32,
   SIZE: 18,
+
   EQ: [],
+  
   CONTROLS: null,
+
   BEAT_INDICATOR: [],
   THRESHOLD_INDICATOR: [],
   VOLUME_INDICATOR: [],
 
   /////////////////////////////////////////////////////////////////////////////////
 
-  analyser: function() {
-
-    _newAnalyser(this.WIDTH * 2, .5);
-
-  }, //analyser
-
   setup: function() {
+
+    document.getElementById('help').innerHTML = "<strong>grid eq</strong><br />left click and drag to rotate<br />right click and drag to pan<br />mousewheel zooms";
 
     this.SCENE = new THREE.Scene();
 
@@ -27,10 +28,8 @@ EFFECTS.push({
     this.RENDERER.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(this.RENDERER.domElement);
-
-    document.getElementById('help').innerHTML = "<strong>grid eq</strong><br />left click and drag to rotate<br />right click and drag to pan<br />mousewheel zooms";
     
-    this.analyser();
+    _NEWANALYSER();
 
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;
@@ -106,7 +105,7 @@ EFFECTS.push({
     }
 
     document.body.removeChild(this.RENDERER.domElement);
-    
+
   }, //destroy
 
   input: function(e) {

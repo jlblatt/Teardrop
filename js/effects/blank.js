@@ -4,13 +4,9 @@ EFFECTS.push({
 
   /////////////////////////////////////////////////////////////////////////////////
 
-  analyser: function() {
-
-    _newAnalyser(1024, .5);
-
-  }, //analyser
-
   setup: function() {
+
+    document.getElementById('help').innerHTML = "blank";
 
     this.SCENE = new THREE.Scene();
 
@@ -19,9 +15,7 @@ EFFECTS.push({
 
     document.body.appendChild(this.RENDERER.domElement);
 
-    document.getElementById('help').innerHTML = "blank";
-
-    this.analyser();
+    _NEWANALYSER();
 
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = 600;
