@@ -39,6 +39,7 @@ window.addEventListener("load", function(event) {
       if(EPTR > EFFECTS.length - 1) EPTR = 0;
       EFFECT = EFFECTS[EPTR];
       EFFECT.setup();
+      _NEWANALYSER();
     }
 
     if(e.which == 32) {
@@ -95,9 +96,8 @@ window.addEventListener("load", function(event) {
     if(firstPlay) {
       EFFECT.setup();
       firstPlay = false;
-    } else {
-      _NEWANALYSER();
     }
+    _NEWANALYSER();
     SONG.play();
     player.classList.add("playing");
     TOTALTIME = SONG.duration;
@@ -210,6 +210,8 @@ function loop(time) {
   }
 
   VOLUME += ((sum / FD.length)  - VOLUME) * 0.2;
+
+  console.log(sum);
 
   if(VOLUME > THRESHOLD && VOLUME > 50 && time - LASTBEAT > 300) {
     EFFECT.beat();

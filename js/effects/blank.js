@@ -15,8 +15,6 @@ EFFECTS.push({
 
     document.body.appendChild(this.RENDERER.domElement);
 
-    _NEWANALYSER();
-
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = 600;
 

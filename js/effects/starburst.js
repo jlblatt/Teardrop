@@ -6,6 +6,7 @@ EFFECTS.push({
   STC: 1,
 
   WAVEFORMS: [],
+  BEAT: false,
 
   /////////////////////////////////////////////////////////////////////////////////
 
@@ -21,8 +22,6 @@ EFFECTS.push({
 
     document.body.appendChild(this.RENDERER.domElement);
 
-    _NEWANALYSER();
-
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = 600;
 
@@ -30,6 +29,12 @@ EFFECTS.push({
 
   destroy: function() {
 
+    for(var i = 0; i < WAVEFORMS.length; i++) {
+      this.SCENE.remove(this.WAVEFORMS[i]);
+    }
+
+    this.WAVEFORMS = [];
+    
     document.body.removeChild(this.RENDERER.domElement);
 
   }, //destroy
@@ -43,10 +48,10 @@ EFFECTS.push({
     var i = this.WAVEFORMS.length;
     while(i--) {
       var w = this.WAVEFORMS[i];
-      w.position.x += w.dx;
-      w.position.y += w.dy;
+      // w.position.x += w.dx;
+      // w.position.y += w.dy;
       w.material.opacity *= .8;
-      w.material.color =  i % 4 ? new THREE.Color(0, 0, 0) : new THREE.Color(Math.random(), Math.random(), Math.random());
+      w.material.color =  i % 10 ? new THREE.Color(0, 0, 0) : new THREE.Color(Math.random(), Math.random(), Math.random());
       if(w.material.opacity < .02) {
         this.SCENE.remove(w);
         this.WAVEFORMS.splice(i, 1);
@@ -55,6 +60,17 @@ EFFECTS.push({
 
     var geometry = new THREE.Geometry();
     var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 0, 0), transparent: true, opacity: .8});
+
+    if(this.BEAT) {
+
+      material.color = new THREE.Color(1, 1, 1);
+      material.transparent = false;
+      material.opacity = 1;
+      this.BEAT = false;
+    } else {
+
+    }
+
     material.blending = THREE.AdditiveBlending;
 
     for(var i = 0; i < TD.length; i++) {
@@ -74,7 +90,8 @@ EFFECTS.push({
   }, //tick
 
   beat: function() {
-
+    this.BEAT = true;
+    console.log('here finally');
   }, //beat
 
   resize: function() {

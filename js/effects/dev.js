@@ -11,7 +11,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "blank";
+    document.getElementById('help').innerHTML = "dev waves";
 
     this.SCENE = new THREE.Scene();
 
@@ -20,14 +20,18 @@ EFFECTS.push({
 
     document.body.appendChild(this.RENDERER.domElement);
 
-    _NEWANALYSER();
-
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = 600;
 
   }, //setup
 
   destroy: function() {
+
+    for(var i = 0; i < WAVEFORMS.length; i++) {
+      this.SCENE.remove(this.WAVEFORMS[i]);
+    }
+
+    this.WAVEFORMS = [];
 
     document.body.removeChild(this.RENDERER.domElement);
 

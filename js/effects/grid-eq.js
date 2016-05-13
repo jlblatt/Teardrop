@@ -28,8 +28,6 @@ EFFECTS.push({
     this.RENDERER.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(this.RENDERER.domElement);
-    
-    _NEWANALYSER();
 
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = this.SIZE * this.WIDTH * 1.4;
