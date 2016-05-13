@@ -3,10 +3,10 @@ EFFECTS.push({
   SCENE: null, CAMERA: null , RENDERER: null,
 
   FFT: 64,
-  STC: 1,
 
   WAVEFORMS: [],
-  BEAT: false,
+
+  ST: Date.now(),
 
   /////////////////////////////////////////////////////////////////////////////////
 
@@ -29,12 +29,12 @@ EFFECTS.push({
 
   destroy: function() {
 
-    for(var i = 0; i < WAVEFORMS.length; i++) {
+    for(var i = 0; i < this.WAVEFORMS.length; i++) {
       this.SCENE.remove(this.WAVEFORMS[i]);
     }
 
     this.WAVEFORMS = [];
-    
+
     document.body.removeChild(this.RENDERER.domElement);
 
   }, //destroy
@@ -48,8 +48,6 @@ EFFECTS.push({
     var i = this.WAVEFORMS.length;
     while(i--) {
       var w = this.WAVEFORMS[i];
-      // w.position.x += w.dx;
-      // w.position.y += w.dy;
       w.material.opacity *= .8;
       w.material.color =  i % 10 ? new THREE.Color(0, 0, 0) : new THREE.Color(Math.random(), Math.random(), Math.random());
       if(w.material.opacity < .02) {
@@ -61,25 +59,19 @@ EFFECTS.push({
     var geometry = new THREE.Geometry();
     var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 0, 0), transparent: true, opacity: .8});
 
-    if(this.BEAT) {
-
-      material.color = new THREE.Color(1, 1, 1);
-      material.transparent = false;
-      material.opacity = 1;
-      this.BEAT = false;
+    if(Date.now() - this.ST < 25000) {
+      material.blending = THREE.AdditiveBlending;
+    } else if(Date.now() - this.ST > 30000) {
+      this.ST = Date.now();
     } else {
-
+      material.blending = THREE.MultiplyBlending;
     }
-
-    material.blending = THREE.AdditiveBlending;
 
     for(var i = 0; i < TD.length; i++) {
       geometry.vertices.push(new THREE.Vector3(40 * (i - (TD.length / 2)), 10 * (TD[i] - 128), 0));
     }
 
     var mesh = new THREE.Line(geometry, material);
-    mesh.dx = Math.random() - .5;
-    mesh.dy = Math.random() - .5;
     this.SCENE.add(mesh);
     this.WAVEFORMS.push(mesh);
 
@@ -90,8 +82,7 @@ EFFECTS.push({
   }, //tick
 
   beat: function() {
-    this.BEAT = true;
-    console.log('here finally');
+
   }, //beat
 
   resize: function() {

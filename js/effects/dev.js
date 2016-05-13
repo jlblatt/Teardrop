@@ -3,7 +3,6 @@ EFFECTS.push({
   SCENE: null, CAMERA: null , RENDERER: null,
 
   FFT: 128,
-  STC: 1,
 
   WAVEFORMS: [],
 
@@ -27,7 +26,7 @@ EFFECTS.push({
 
   destroy: function() {
 
-    for(var i = 0; i < WAVEFORMS.length; i++) {
+    for(var i = 0; i < this.WAVEFORMS.length; i++) {
       this.SCENE.remove(this.WAVEFORMS[i]);
     }
 
