@@ -66,12 +66,12 @@ EFFECTS.push({
         var material = new THREE.LineBasicMaterial({color: new THREE.Color(1, 1, 1), transparent: true});
 
         for(var j = 0; j < TD.length; j++) {
-          geometry.vertices.push(new THREE.Vector3(12 * (j - (TD.length / 2)), 10 * (TD[j] - 128) + i, 0));
+          geometry.vertices.push(new THREE.Vector3(14 * (j - (TD.length / 2)), 10 * (TD[j] - 128) + i, 0));
         }
 
         var mesh = new THREE.Line(geometry, material);
 
-        mesh.position.z = 250;
+        mesh.position.z = 150;
         mesh.material.opacity = 1;
         mesh.dx = 0;
         mesh.dy = 0;
