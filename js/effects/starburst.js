@@ -2,7 +2,7 @@ EFFECTS.push({
 
   SCENE: null, CAMERA: null , RENDERER: null,
 
-  FFT: 128,
+  FFT: 64,
   STC: 1,
 
   WAVEFORMS: [],
@@ -11,11 +11,12 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "blank";
+    document.getElementById('help').innerHTML = "<strong>starburst</strong>";
 
     this.SCENE = new THREE.Scene();
 
-    this.RENDERER = new THREE.WebGLRenderer();
+    this.RENDERER = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
+    this.RENDERER.autoClearColor = false;
     this.RENDERER.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(this.RENDERER.domElement);
@@ -44,9 +45,8 @@ EFFECTS.push({
       var w = this.WAVEFORMS[i];
       w.position.x += w.dx;
       w.position.y += w.dy;
-      w.position.z += w.dz;
-      w.material.opacity *= .98;
-      //w.material.color =  i % 2 ? new THREE.Color(Math.random(), Math.random(), Math.random()) : new THREE.Color(0, 0, 0);
+      w.material.opacity *= .8;
+      w.material.color =  i % 4 ? new THREE.Color(0, 0, 0) : new THREE.Color(Math.random(), Math.random(), Math.random());
       if(w.material.opacity < .02) {
         this.SCENE.remove(w);
         this.WAVEFORMS.splice(i, 1);
@@ -54,18 +54,20 @@ EFFECTS.push({
     }
 
     var geometry = new THREE.Geometry();
-    var material = new THREE.LineBasicMaterial({color: new THREE.Color(1, 1, 1), transparent: true, opacity: .8});
+    var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 0, 0), transparent: true, opacity: .8});
+    material.blending = THREE.AdditiveBlending;
 
     for(var i = 0; i < TD.length; i++) {
-      geometry.vertices.push(new THREE.Vector3(20 * (i - (TD.length / 2)), 10 * (TD[i] - 128), 0));
+      geometry.vertices.push(new THREE.Vector3(40 * (i - (TD.length / 2)), 10 * (TD[i] - 128), 0));
     }
 
     var mesh = new THREE.Line(geometry, material);
     mesh.dx = Math.random() - .5;
     mesh.dy = Math.random() - .5;
-    mesh.dz = Math.random() - .5;
     this.SCENE.add(mesh);
     this.WAVEFORMS.push(mesh);
+
+    this.CAMERA.rotation.z += 1;
 
     this.RENDERER.render(this.SCENE, this.CAMERA);
 
