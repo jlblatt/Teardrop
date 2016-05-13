@@ -65,7 +65,7 @@ EFFECTS.push({
         var material = new THREE.MeshBasicMaterial({color: new THREE.Color(1, 1, 1), transparent: true, opacity: 1});
         var mesh = new THREE. Mesh(geometry, material);
         mesh.position.x = 32 * (i - (TD.length / 2));
-        mesh.position.y = 10 * (TD[i] - 128);
+        mesh.position.y = 8 * (TD[i] - 128);
         mesh.dx = Math.random() - .5;
         mesh.dy = Math.random() - .5;
         mesh.dz = Math.random() - .5;

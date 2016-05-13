@@ -68,7 +68,7 @@ EFFECTS.push({
     }
 
     for(var i = 0; i < TD.length; i++) {
-      geometry.vertices.push(new THREE.Vector3(40 * (i - (TD.length / 2)), 10 * (TD[i] - 128), 0));
+      geometry.vertices.push(new THREE.Vector3(40 * (i - (TD.length / 2)), 8 * (TD[i] - 128), 0));
     }
 
     var mesh = new THREE.Line(geometry, material);
