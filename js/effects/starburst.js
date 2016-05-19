@@ -6,13 +6,13 @@ EFFECTS.push({
 
   WAVEFORMS: [],
 
-  ST: Date.now(),
+  RSHIFTDOWN: false,
 
   /////////////////////////////////////////////////////////////////////////////////
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>starburst</strong>";
+    document.getElementById('help').innerHTML = "<strong>starburst</strong><br />right shift erases";
 
     this.SCENE = new THREE.Scene();
 
@@ -41,6 +41,12 @@ EFFECTS.push({
 
   input: function(e) {
 
+    if(e.type == "keydown" && e.which == 16) {
+      this.RSHIFTDOWN = true;
+    } else if(e.type == "keyup" && e.which == 16) {
+      this.RSHIFTDOWN = false;
+    }
+
   }, //input
 
   tick: function() {
@@ -59,10 +65,8 @@ EFFECTS.push({
     var geometry = new THREE.Geometry();
     var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 0, 0), transparent: true, opacity: .8});
 
-    if(Date.now() - this.ST < 25000) {
+    if(!this.RSHIFTDOWN) {
       material.blending = THREE.AdditiveBlending;
-    } else if(Date.now() - this.ST > 30000) {
-      this.ST = Date.now();
     } else {
       material.blending = THREE.MultiplyBlending;
     }

@@ -56,9 +56,15 @@ window.addEventListener("load", function(event) {
 
   }
 
+  window.onkeyup = function(e) {
+    e.clientX = Math.floor(Math.random() * window.innerWidth);
+    e.clientY = Math.floor(Math.random() * window.innerHeight);
+    inputEvent(e);
+  }
+
   window.onresize = function() {
     EFFECT.resize();
-  };
+  }
 
   //setup audio
   
