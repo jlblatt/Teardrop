@@ -63,7 +63,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />number keys to change theme color<br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle blend modes<br />right shift to change rotation";
+    document.getElementById('help').innerHTML = "<strong>first contact</strong><br />number keys to change theme color<br />arrow up/down to cycle kaleidoscopes<br />arrow left/right to cycle blend modes<br />[r] to change rotation";
 
     this.SCENE = new THREE.Scene();
 
@@ -189,7 +189,7 @@ EFFECTS.push({
 
       //rotations
     
-      if(e.which == 16 && this.K_STATES[this.K_PTR]) {
+      if(e.which == 82 && this.K_STATES[this.K_PTR]) {
         this.ROTATION++;
         if(this.ROTATION > 3) {
           this.ROTATION = 0;

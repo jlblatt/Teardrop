@@ -6,13 +6,13 @@ EFFECTS.push({
 
   WAVEFORMS: [],
 
-  RSHIFTDOWN: false,
+  ERASE: false,
 
   /////////////////////////////////////////////////////////////////////////////////
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>starburst</strong><br />right shift erases";
+    document.getElementById('help').innerHTML = "<strong>starburst</strong><br />[e] natural erases<br />[h] hard erase";
 
     this.SCENE = new THREE.Scene();
 
@@ -41,10 +41,12 @@ EFFECTS.push({
 
   input: function(e) {
 
-    if(e.type == "keydown" && e.which == 16) {
-      this.RSHIFTDOWN = true;
-    } else if(e.type == "keyup" && e.which == 16) {
-      this.RSHIFTDOWN = false;
+    if(e.type == "keydown" && e.which == 69) {
+      this.ERASE = true;
+    } else if(e.type == "keyup" && e.which == 69) {
+      this.ERASE = false;
+    } else if(e.type == "keydown" && e.which == 72) {
+      this.RENDERER.clear();
     }
 
   }, //input
@@ -65,7 +67,7 @@ EFFECTS.push({
     var geometry = new THREE.Geometry();
     var material = new THREE.LineBasicMaterial({color: new THREE.Color(0, 0, 0), transparent: true, opacity: .8});
 
-    if(!this.RSHIFTDOWN) {
+    if(!this.ERASE) {
       material.blending = THREE.AdditiveBlending;
     } else {
       material.blending = THREE.MultiplyBlending;
