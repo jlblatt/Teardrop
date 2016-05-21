@@ -6,13 +6,15 @@ EFFECTS.push({
 
   WAVEFORMS: [],
 
+  RADIAL: true,
+
   ERASE: false,
 
   /////////////////////////////////////////////////////////////////////////////////
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>starburst</strong><br />[e] natural erases<br />[h] hard erase";
+    document.getElementById('help').innerHTML = "<strong>starburst</strong><br />arrow keys toggle linear/radial<br />[e] natural erases<br />[h] hard erase";
 
     this.SCENE = new THREE.Scene();
 
@@ -47,6 +49,9 @@ EFFECTS.push({
       this.ERASE = false;
     } else if(e.type == "keydown" && e.which == 72) {
       this.RENDERER.clear();
+    } else if(e.type == "keydown" && (e.which == 37 || e.which == 38 || e.which == 39 || e.which == 40)) {
+      this.RADIAL = !this.RADIAL;
+      this.CAMERA.rotation.z = 0;
     }
 
   }, //input
@@ -81,7 +86,7 @@ EFFECTS.push({
     this.SCENE.add(mesh);
     this.WAVEFORMS.push(mesh);
 
-    this.CAMERA.rotation.z += 1;
+    if(this.RADIAL) this.CAMERA.rotation.z += 1;
 
     this.RENDERER.render(this.SCENE, this.CAMERA);
 
