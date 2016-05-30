@@ -6,7 +6,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "blank";
+    document.getElementById('help').innerHTML = "<strong>blank</strong><br />this is a starting point for custom visualizations";
 
     this.SCENE = new THREE.Scene();
 
