@@ -30,7 +30,7 @@ EFFECTS.push({
 
   }, //input
 
-  tick: function() {
+  tick: function(t) {
 
     this.RENDERER.render(this.SCENE, this.CAMERA);
 

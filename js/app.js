@@ -223,7 +223,7 @@ function loop(time) {
     LASTBEAT = time;
   }
 
-  EFFECT.tick();
+  EFFECT.tick(time);
 
   TWEEN.update(time);
 

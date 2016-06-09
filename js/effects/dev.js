@@ -8,8 +8,6 @@ EFFECTS.push({
 
   WALL: null,
 
-  PALETTE: [0x001111, 0x002222, 0x003333, 0x004444, 0x005555, 0x006666, 0x007777, 0x008888],
-
   BEAT: false,
   BT: Date.now(),
 
@@ -29,7 +27,7 @@ EFFECTS.push({
     this.CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
     this.CAMERA.position.z = 600;
 
-    var material = new THREE.MeshBasicMaterial({color: new THREE.Color(this.PALETTE[0])});
+    var material = new THREE.MeshBasicMaterial({color: new THREE.Color(0, 0, 0), transparent: true, opacity: .7});
     var geometry = new THREE.PlaneGeometry(20000, 10000);
     var mesh = new THREE.Mesh(geometry, material);
 
@@ -56,7 +54,7 @@ EFFECTS.push({
 
   }, //input
 
-  tick: function() {
+  tick: function(t) {
 
     var i = this.DOTS.length;
     while(i--) {
@@ -71,23 +69,8 @@ EFFECTS.push({
       }
     }
 
-    var buckets = new Array(this.PALETTE.length);
-    
-    for(i = 0; i < buckets.length; i++) {
-      buckets[i] = 0;
-    }
-
-    for(i = 0; i < FD.length; i++) {
-      buckets[Math.floor(i * buckets.length / FD.length)] += FD[i];
-    }
-
-    var highest = 0, index = 0;
-
-    for(i = 0; i < buckets.length; i++) {
-      if(buckets[i] > highest) index = i;
-    }
-    
-    this.WALL.material.color = new THREE.Color(this.PALETTE[index]);
+    var tval = t / 25000;
+    this.WALL.material.color = new THREE.Color(Math.sin(tval), Math.sin(tval + (tval / 3)), Math.sin(tval + (2 * tval / 3)));
 
     if(this.BEAT) {
 
