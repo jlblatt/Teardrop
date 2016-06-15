@@ -88,8 +88,6 @@ EFFECTS.push({
         this.DOTS.push(mesh);
       }
 
-      this.WALL.material.color = new THREE.Color(1, 1, 1);
-
       this.BEAT = false;
 
     }
