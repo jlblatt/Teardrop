@@ -15,7 +15,7 @@ EFFECTS.push({
 
   setup: function() {
 
-    document.getElementById('help').innerHTML = "<strong>mmmmmmm</strong>";
+    document.getElementById('help').innerHTML = "<strong>Disco Flash</strong>";
 
     this.SCENE = new THREE.Scene();
 
