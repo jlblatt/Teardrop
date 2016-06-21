@@ -57,6 +57,7 @@ EFFECTS.push({
   tick: function(t) {
 
     var i = this.DOTS.length;
+    
     while(i--) {
       var d = this.DOTS[i];
       d.position.x += d.dx * 6;
