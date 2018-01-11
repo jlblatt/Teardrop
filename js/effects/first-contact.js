@@ -39,7 +39,7 @@ EFFECTS.push({
 
     for(var i = 0; i < this.POINTS.length; i++) {
       this.POINTS[i].colorQueue = cq.slice();
-      if(cq.length> 0) {
+      if(cq.length > 0) {
         var c = cq.shift();
         cq.push(c);
       }
@@ -240,7 +240,8 @@ EFFECTS.push({
           var c = this.POINTS[i].colorQueue.shift();
           this.POINTS[i].colorQueue.push(c);
         } else {
-          this.POINTS[i].material.color = new THREE.Color(Math.random(), Math.random(), Math.random());  
+          this.POINTS[i].material.color = new THREE.Color();
+          this.POINTS[i].material.color.setHSL(Math.random(), .8, .5);
         }
       }
     }
@@ -252,7 +253,8 @@ EFFECTS.push({
       this.LINESMESH.material.color = c;
       this.LINESMESH.colorQueue.push(c);
     } else {
-      this.LINESMESH.material.color = new THREE.Color(Math.random(), Math.random(), Math.random());
+      this.LINESMESH.material.color = new THREE.Color();
+      this.LINESMESH.material.color.setHSL(Math.random(), .8, .5);
     }
 
   }, //beat
