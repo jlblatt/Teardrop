@@ -108,7 +108,12 @@ window.addEventListener("load", function(event) {
     player.classList.add("playing");
     TOTALTIME = SONG.duration;
   });
+  
   SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
+
+  // local js hack
+  if(location.search == '?uselocal') SONG.src = "http://127.0.0.1/local/getmp3.php?" + Math.random();
+
   document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
 
   window.addEventListener('drop', function(e) {
