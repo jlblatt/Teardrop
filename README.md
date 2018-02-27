@@ -12,6 +12,8 @@ Working with MIDI files proved unreliable for several reasons, so Teardrop is a 
 
 [Ricardo Cabello](http://mrdoob.com/) (a.k.a. "Mr Doob") and many others - [three.js](http://threejs.org/) ([github](https://github.com/mrdoob/three.js/))
 
+[Charlie Hoey](http://charliehoey.com/) - [GPU particle system](https://threejs.org/examples/webgl_gpu_particle_system.html)
+
 [gskinner](http://gskinner.com/) - [tween.js](http://www.createjs.com/tweenjs) ([github](https://github.com/tweenjs/tween.js/))
 
 [António Afonso](http://web.ist.utl.pt/antonio.afonso/www.aadsm.net/) - JS Media Tags ([github](https://github.com/aadsm/jsmediatags))

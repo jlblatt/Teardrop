@@ -108,13 +108,16 @@ window.addEventListener("load", function(event) {
     player.classList.add("playing");
     TOTALTIME = SONG.duration;
   });
-  
-  SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3";
 
   // local js hack
-  if(location.search == '?uselocal') SONG.src = "http://127.0.0.1/local/getmp3.php?" + Math.random();
+  if(document.location.search.indexOf('uselocal') >= 0) {
+    SONG.src = "http://127.0.0.1/local/getmp3.php?" + Math.random();
+    document.getElementById("info").innerHTML = 'Surprise! Random Local Track';
 
-  document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
+  } else {
+    SONG.src = "mp3/sts9.2015-10-30.m934b.vms32ub.zoomf8.24bit-t04.mp3"; 
+    document.getElementById("info").innerHTML = 'Tap-In - STS9 - 2015-10-30, Stage AE, Pittsburgh PA';
+  }
 
   window.addEventListener('drop', function(e) {
     e.preventDefault();
@@ -238,5 +241,9 @@ function loop(time) {
 
   document.getElementById("curr-time").innerHTML = _FORMATTIME(SONG.currentTime);
   document.getElementById("total-time").innerHTML = _FORMATTIME(TOTALTIME);
-  document.getElementById("progress").style.width = (SONG.currentTime * 100 / TOTALTIME) + '%';
+
+  var progressBarWidth = (SONG.currentTime * 100 / TOTALTIME);
+  if(progressBarWidth > 100) progressBarWidth = 100;
+  
+  document.getElementById("progress").style.width = progressBarWidth + '%';
 }
